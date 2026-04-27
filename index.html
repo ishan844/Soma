@@ -163,6 +163,11 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.3);
     margin-bottom: 16px;
     color: var(--text-primary);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+  }
+  
+  .glass-card:active {
+    transform: scale(0.98);
   }
 
   .card-header {
@@ -222,32 +227,112 @@
   
   .card-button:active { background: rgba(255,255,255,0.15); }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .metrics-stack {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     margin-bottom: 16px;
   }
 
-  .stat-mini-card {
+  .metric-card {
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 20px;
-    padding: 20px 16px;
-    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 24px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+    box-shadow: inset 0 0 40px rgba(255,255,255,0.01);
   }
 
-  .stat-mini-val {
-    font-family: var(--font-title);
-    font-size: 36px;
-    margin-bottom: 8px;
+  .metric-card:active {
+    transform: scale(0.98);
+    background: rgba(255,255,255,0.04);
   }
 
-  .stat-mini-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  .metric-chevron {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex; justify-content: center; align-items: center;
+    font-size: 12px;
+    color: var(--text-primary);
+    z-index: 3;
+    opacity: 0.9;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .metric-card:active {
+    transform: scale(0.98);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .metric-info {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    font-weight: 600;
     color: var(--text-secondary);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .metric-val {
+    font-family: var(--font-title);
+    font-size: 38px;
+    color: var(--text-primary);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .metric-unit {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 400;
+    text-transform: lowercase;
+  }
+
+  .metric-chart {
+    position: absolute;
+    right: -5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    opacity: 0.7;
+    mask-image: linear-gradient(to right, transparent, black 30%);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 30%);
+    pointer-events: none;
+    color: var(--text-primary);
+  }
+  
+  .metric-chart svg {
+    width: 100%;
+    height: 60%;
+    overflow: visible;
   }
 
   /* ─── DEVELOPER CONTROLS ─── */
@@ -280,9 +365,232 @@
   }
   select option { background: #111; color: white; }
 
+  /* ─── DETAIL VIEW OVERLAY ─── */
+  #detailView {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1000;
+    background-color: var(--bg-base);
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 1.5s ease;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 60px;
+    will-change: transform;
+  }
+
+  #detailView.open {
+    transform: translateX(0);
+  }
+
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(to bottom, var(--bg-base) 60%, transparent);
+  }
+
+  .detail-back, .detail-add {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    display: flex; justify-content: center; align-items: center;
+    color: var(--text-primary);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .detail-back { font-size: 16px; }
+  .detail-add { font-size: 20px; font-weight: 300; }
+  .detail-back:active, .detail-add:active { background: rgba(255,255,255,0.1); }
+
+  .detail-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+  }
+
+  .time-tabs {
+    display: flex;
+    margin: 0 24px 24px 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 20px;
+    padding: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .time-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .time-tab.active {
+    background: rgba(255,255,255,0.15);
+    color: var(--text-primary);
+  }
+
+  .main-chart-container {
+    padding: 0 24px;
+    margin-bottom: 40px;
+  }
+
+  .main-chart-header { margin-bottom: 16px; }
+
+  .main-chart-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .main-chart-val {
+    font-family: var(--font-title);
+    font-size: 46px;
+    line-height: 1;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .main-chart-unit {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+
+  .main-chart-date {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
+
+  .main-chart-area {
+    height: 180px;
+    width: 100%;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 16.66% 100%;
+  }
+
+  .main-chart-area svg { width: 100%; height: 100%; overflow: visible; }
+
+  .highlights-section { padding: 0 24px; }
+
+  .highlights-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+
+  .highlights-title {
+    font-family: var(--font-title);
+    font-size: 26px;
+    color: var(--text-primary);
+  }
+
+  .highlights-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: #4da6ff;
+    cursor: pointer;
+  }
+
+  .highlight-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: inset 0 0 40px rgba(255,255,255,0.01);
+  }
+
+  .hc-icon-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--theme-color, var(--text-primary));
+    margin-bottom: 12px;
+  }
+
+  .hc-copy {
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+
+  .hc-stats-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .hc-stat { display: flex; flex-direction: column; }
+  
+  .hc-stat-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hc-stat-label::before {
+    content: '';
+    display: block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+
+  .hc-stat-val {
+    font-family: var(--font-title);
+    font-size: 32px;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .hc-stat-unit {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .hc-chart { height: 100px; width: 100%; position: relative; }
+  .hc-chart svg { width: 100%; height: 100%; overflow: visible; }
+
 </style>
 </head>
 <body>
+  <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="currentColor" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
 
   <!-- BACKGROUNDS -->
   <div class="bg-layer" id="bgLayer"></div>
@@ -341,7 +649,7 @@
       <button class="card-button">Learn more</button>
     </div>
 
-    <div class="stats-grid" id="statsGrid">
+    <div class="metrics-stack" id="statsGrid">
       <!-- Populated by JS -->
     </div>
 
@@ -356,6 +664,44 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- DETAIL VIEW OVERLAY -->
+  <div id="detailView">
+    <div class="detail-header">
+      <div class="detail-back" onclick="closeDetailView()">&#x276E;</div>
+      <div class="detail-title" id="dvTitle">--</div>
+      <div class="detail-add">+</div>
+    </div>
+    
+    <div class="time-tabs">
+      <div class="time-tab">D</div>
+      <div class="time-tab active">W</div>
+      <div class="time-tab">M</div>
+      <div class="time-tab">6M</div>
+      <div class="time-tab">Y</div>
+    </div>
+
+    <div class="main-chart-container">
+      <div class="main-chart-header">
+        <div class="main-chart-label">AVERAGE</div>
+        <div class="main-chart-val" id="dvMainVal">-- <span class="main-chart-unit" id="dvMainUnit">--</span></div>
+        <div class="main-chart-date">21–27 Apr 2026</div>
+      </div>
+      <div class="main-chart-area" id="dvMainChart">
+        <!-- SVG injected here -->
+      </div>
+    </div>
+
+    <div class="highlights-section">
+      <div class="highlights-header">
+        <div class="highlights-title">Highlights</div>
+        <div class="highlights-link">Show All</div>
+      </div>
+      <div id="dvHighlights">
+        <!-- Highlight cards injected here -->
+      </div>
+    </div>
   </div>
 
 <script>
@@ -528,22 +874,45 @@ function manualUpdate() {
   document.getElementById('contextCardHeadline').textContent = stateSel === "Calm & Recovered" ? "Looking good" : "Minor signs";
   document.getElementById('contextCardBody').textContent = copyObj.s + " " + (rawData.insight || "Pay attention to your body's signals today.");
 
+  const svgs = {
+    hr: `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(255,255,255,0.2));"><path d="M0 20 L20 20 L24 10 L28 30 L32 5 L36 35 L40 20 L100 20" /></svg>`,
+    energy: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 40 L0 30 C 20 30, 30 10, 50 20 C 70 30, 80 15, 100 10 L100 40 Z" fill="url(#areaGrad)" /><path d="M0 30 C 20 30, 30 10, 50 20 C 70 30, 80 15, 100 10" fill="none" stroke="currentColor" stroke-width="1.5" filter="drop-shadow(0 0 2px rgba(255,255,255,0.4))"/><circle cx="100" cy="10" r="2.5" fill="currentColor" filter="drop-shadow(0 0 4px rgba(255,255,255,0.8))"/></svg>`,
+    steadiness: `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="stroke: currentColor; stroke-width: 2; stroke-linecap: round; opacity: 0.8;"><line x1="10" y1="12" x2="10" y2="28" /><line x1="22" y1="8" x2="22" y2="32" /><line x1="34" y1="16" x2="34" y2="24" /><line x1="46" y1="12" x2="46" y2="28" /><line x1="58" y1="4" x2="58" y2="36" /><line x1="70" y1="10" x2="70" y2="30" /><line x1="82" y1="18" x2="82" y2="22" /><line x1="94" y1="14" x2="94" y2="26" /></svg>`,
+    stress: `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="stroke: currentColor; stroke-width: 1.5; fill: none; stroke-dasharray: 4 6; stroke-linecap: round;"><path d="M0 20 Q 25 5, 50 20 T 100 20" /></svg>`
+  };
+
   document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-mini-card">
-      <div class="stat-mini-val">${rawData.bpm}</div>
-      <div class="stat-mini-label">Heart Rate</div>
+    <div class="metric-card" onclick="openDetailView('hr')">
+      <div class="metric-info">
+        <div class="metric-label">Heart Rate</div>
+        <div class="metric-val">${rawData.bpm} <span class="metric-unit">bpm</span></div>
+      </div>
+      <div class="metric-chart">${svgs.hr}</div>
+      <div class="metric-chevron">&#x276F;</div>
     </div>
-    <div class="stat-mini-card">
-      <div class="stat-mini-val">${rawData.recovery_score}</div>
-      <div class="stat-mini-label">Energy</div>
+    <div class="metric-card" onclick="openDetailView('energy')">
+      <div class="metric-info">
+        <div class="metric-label">Energy</div>
+        <div class="metric-val">${rawData.recovery_score} <span class="metric-unit">%</span></div>
+      </div>
+      <div class="metric-chart">${svgs.energy}</div>
+      <div class="metric-chevron">&#x276F;</div>
     </div>
-    <div class="stat-mini-card">
-      <div class="stat-mini-val">${rawData.rmssd}</div>
-      <div class="stat-mini-label">Steadiness</div>
+    <div class="metric-card" onclick="openDetailView('steadiness')">
+      <div class="metric-info">
+        <div class="metric-label">Steadiness</div>
+        <div class="metric-val">${rawData.rmssd} <span class="metric-unit">ms</span></div>
+      </div>
+      <div class="metric-chart">${svgs.steadiness}</div>
+      <div class="metric-chevron">&#x276F;</div>
     </div>
-    <div class="stat-mini-card">
-      <div class="stat-mini-val">${rawData.stress_index}</div>
-      <div class="stat-mini-label">Stress Idx</div>
+    <div class="metric-card" onclick="openDetailView('stress')">
+      <div class="metric-info">
+        <div class="metric-label">Stress Idx</div>
+        <div class="metric-val">${rawData.stress_index}</div>
+      </div>
+      <div class="metric-chart">${svgs.stress}</div>
+      <div class="metric-chevron">&#x276F;</div>
     </div>
   `;
 
@@ -552,6 +921,114 @@ function manualUpdate() {
   
   // Update target BPM for blob breathing
   window.targetBpm = rawData.bpm;
+}
+
+// ─── DETAIL VIEW LOGIC ──────────────────────────────
+const detailMockData = {
+  hr: {
+    title: "Heart Rate", val: "62", unit: "bpm", themeColor: "#ff4d4d", icon: "❤️",
+    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="5" y="40" width="8" height="60" fill="var(--theme-color)" rx="2"/><rect x="21" y="20" width="8" height="80" fill="var(--theme-color)" rx="2"/><rect x="37" y="50" width="8" height="50" fill="var(--theme-color)" rx="2"/><rect x="53" y="10" width="8" height="90" fill="var(--theme-color)" rx="2"/><rect x="69" y="60" width="8" height="40" fill="var(--theme-color)" rx="2"/><rect x="85" y="30" width="8" height="70" fill="var(--theme-color)" rx="2"/></svg>`,
+    highlights: [
+      {
+        copy: "Your resting heart rate is slightly elevated today compared to your weekly average.",
+        label1: "Today", val1: "68", color1: "var(--theme-color)",
+        label2: "Average", val2: "61", color2: "var(--text-secondary)",
+        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 30 Q 25 30 50 15 T 100 20" fill="none" stroke="var(--text-secondary)" stroke-width="2" opacity="0.5"/><path d="M0 25 Q 25 35 50 10 T 100 5" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="100" cy="5" r="3" fill="var(--theme-color)"/></svg>`
+      }
+    ]
+  },
+  energy: {
+    title: "Energy & Recovery", val: "82", unit: "%", themeColor: "#4dff88", icon: "⚡",
+    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10 L100 100 Z" fill="var(--theme-color)" opacity="0.4"/><path d="M0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10" fill="none" stroke="var(--theme-color)" stroke-width="3"/></svg>`,
+    highlights: [
+      {
+        copy: "You've been recovering much better this month compared to last month.",
+        label1: "April", val1: "82%", color1: "var(--theme-color)",
+        label2: "March", val2: "71%", color2: "var(--text-secondary)",
+        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="10" width="100" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="26" width="70" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
+      },
+      {
+        copy: "You averaged an 85% recovery score over the last 7 days.",
+        label1: "Current", val1: "85%", color1: "var(--theme-color)",
+        label2: "Baseline", val2: "75%", color2: "var(--text-secondary)",
+        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><line x1="0" y1="20" x2="100" y2="20" stroke="var(--theme-color)" stroke-width="1.5"/><rect x="10" y="5" width="6" height="35" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="25" y="15" width="6" height="25" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="40" y="10" width="6" height="30" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="55" y="25" width="6" height="15" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="70" y="5" width="6" height="35" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="85" y="20" width="6" height="20" fill="rgba(255,255,255,0.2)" rx="2"/></svg>`
+      }
+    ]
+  },
+  steadiness: {
+    title: "Steadiness (RMSSD)", val: "48", unit: "ms", themeColor: "#4da6ff", icon: "🌊",
+    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="5" y="40" width="8" height="60" fill="var(--theme-color)" rx="2"/><rect x="21" y="20" width="8" height="80" fill="var(--theme-color)" rx="2"/><rect x="37" y="50" width="8" height="50" fill="var(--theme-color)" rx="2"/><rect x="53" y="10" width="8" height="90" fill="var(--theme-color)" rx="2"/><rect x="69" y="60" width="8" height="40" fill="var(--theme-color)" rx="2"/><rect x="85" y="30" width="8" height="70" fill="var(--theme-color)" rx="2"/></svg>`,
+    highlights: [
+      {
+        copy: "Your nervous system resilience is trending upwards.",
+        label1: "Current", val1: "48", color1: "var(--theme-color)",
+        label2: "Previous", val2: "35", color2: "var(--text-secondary)",
+        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 35 L 50 30 L 100 5" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="100" cy="5" r="3" fill="var(--theme-color)"/></svg>`
+      }
+    ]
+  },
+  stress: {
+    title: "Stress Index", val: "1.2", unit: "", themeColor: "#ffb84d", icon: "〰️",
+    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 80 Q 25 60 50 80 T 100 80" fill="none" stroke="var(--theme-color)" stroke-width="3" stroke-dasharray="4 6"/></svg>`,
+    highlights: [
+      {
+        copy: "You are exhibiting minimal physical stress today.",
+        label1: "Today", val1: "1.2", color1: "var(--theme-color)",
+        label2: "Average", val2: "3.4", color2: "var(--text-secondary)",
+        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="10" width="30" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="26" width="60" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
+      }
+    ]
+  }
+};
+
+function openDetailView(key) {
+  const data = detailMockData[key];
+  if(!data) return;
+
+  const dv = document.getElementById('detailView');
+  
+  // Set basic data
+  document.getElementById('dvTitle').textContent = data.title;
+  document.getElementById('dvMainVal').innerHTML = `${data.val} <span class="main-chart-unit">${data.unit}</span>`;
+  document.getElementById('dvMainChart').innerHTML = data.mainChart;
+  
+  // Set theme variable for charts
+  dv.style.setProperty('--theme-color', data.themeColor);
+
+  // Generate highlights
+  let highlightsHtml = '';
+  data.highlights.forEach(hl => {
+    highlightsHtml += `
+      <div class="highlight-card">
+        <div class="hc-icon-title">${data.icon} ${data.title}</div>
+        <div class="hc-copy">${hl.copy}</div>
+        <div class="hc-stats-row">
+          <div class="hc-stat">
+            <div class="hc-stat-label" style="color: ${hl.color1}">${hl.label1}</div>
+            <div class="hc-stat-val" style="color: ${hl.color1}">${hl.val1} <span class="hc-stat-unit">${data.unit}</span></div>
+          </div>
+          <div class="hc-stat">
+            <div class="hc-stat-label" style="color: ${hl.color2}">${hl.label2}</div>
+            <div class="hc-stat-val" style="color: ${hl.color2}">${hl.val2} <span class="hc-stat-unit">${data.unit}</span></div>
+          </div>
+        </div>
+        <div class="hc-chart">
+          ${hl.chart}
+        </div>
+      </div>
+    `;
+  });
+  
+  document.getElementById('dvHighlights').innerHTML = highlightsHtml;
+
+  // Slide in
+  dv.classList.add('open');
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeDetailView() {
+  document.getElementById('detailView').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 // ─── THREE.JS BLOB LOGIC ────────────────────────────
