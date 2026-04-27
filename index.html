@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Soma</title>
+<style>
+/* ─── RESET & TOKENS ─── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080810;
+  --card-bg:rgba(255,255,255,0.05);
+  --card-border:rgba(255,255,255,0.08);
+  --text-primary:rgba(255,255,255,0.92);
+  --text-secondary:rgba(255,255,255,0.50);
+  --text-muted:rgba(255,255,255,0.30);
+  --orb-inner:#D8ECD4;--orb-mid:#B8D4B0;--orb-outer:#90B888;
+  --orb-glow:rgba(184,212,176,0.25);
+  --label-color:#B8D4B0;
+  --accent:#B8D4B0;
+  --bg-radial-1:rgba(144,184,136,0.12);
+  --bg-radial-2:rgba(184,212,176,0.06);
+  --bg-tint:#0a100a;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  background:var(--bg);color:var(--text-primary);
+  min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── ATMOSPHERIC BACKGROUND ─── */
+.bg-layer{
+  position:fixed;inset:0;z-index:0;
+  transition:opacity 1.5s ease;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%,var(--bg-radial-1) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 40% at 30% 80%,var(--bg-radial-2) 0%,transparent 60%),
+    linear-gradient(180deg,var(--bg) 0%,var(--bg-tint) 100%);
+}
+
+/* ─── CONNECTION STATUS ─── */
+.conn-status{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:10px 20px;text-align:center;font-size:12px;font-weight:600;
+  letter-spacing:0.3px;transform:translateY(-100%);
+  transition:transform 0.3s ease;
+}
+.conn-status.show{transform:translateY(0)}
+.conn-status.connecting{background:rgba(255,193,7,0.15);color:#ffc107}
+.conn-status.connected{background:rgba(76,175,80,0.15);color:#81c784}
+.conn-status.error{background:rgba(244,67,54,0.15);color:#e57373}
+
+/* ─── STICKY HEADER ─── */
+.sticky-header{
+  position:fixed;top:0;left:0;right:0;height:52px;z-index:100;
+  display:flex;align-items:center;padding:0 20px;gap:12px;
+  background:rgba(8,8,16,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  opacity:0;transform:translateY(-100%);
+  transition:opacity 0.35s,transform 0.35s;pointer-events:none;
+}
+.sticky-header.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.sticky-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--orb-glow);
+  transition:background 0.5s,box-shadow 0.5s;
+}
+.sticky-state{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:14px;font-weight:400;color:var(--label-color);
+  transition:color 0.5s;
+}
+.sticky-right{margin-left:auto;display:flex;align-items:baseline;gap:4px}
+.sticky-bpm{font-family:'SF Mono',Menlo,'Courier New',monospace;font-size:14px;font-weight:300;color:var(--text-secondary)}
+.sticky-bpm-unit{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* ─── TOP BAR ─── */
+.top-bar{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;z-index:10;
+}
+.brand{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:18px;font-weight:400;letter-spacing:1px;color:var(--text-primary);
+}
+.mode-toggle{display:flex;align-items:center;gap:8px}
+.toggle-label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:0.8px;color:var(--text-muted);transition:color 0.2s;
+}
+.toggle-label.active{color:var(--text-primary)}
+.toggle-track{
+  width:36px;height:20px;background:rgba(255,255,255,0.12);
+  border-radius:10px;position:relative;cursor:pointer;transition:background 0.3s;
+}
+.toggle-track.live{background:rgba(76,175,80,0.3)}
+.toggle-thumb{
+  width:16px;height:16px;background:#fff;border-radius:50%;
+  position:absolute;top:2px;left:2px;transition:left 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.toggle-track.live .toggle-thumb{left:18px}
+
+/* ─── HOME ZONE ─── */
+.home-zone{
+  position:relative;z-index:1;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:80px 20px 40px;text-align:center;
+  will-change:opacity,filter;
+}
+.ambient-bpm{
+  position:absolute;top:18px;right:60px;
+  display:flex;align-items:baseline;gap:3px;z-index:10;
+}
+.ambient-bpm .val{
+  font-family:'SF Mono',Menlo,'Courier New',monospace;
+  font-size:13px;font-weight:300;color:var(--text-muted);
+}
+.ambient-bpm .unit{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* ─── ORB ─── */
+.orb-wrapper{
+  position:relative;width:200px;height:200px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:28px;
+}
+.orb{
+  width:170px;height:170px;border-radius:50%;
+  background:radial-gradient(circle at 38% 36%,var(--orb-inner),var(--orb-mid) 55%,var(--orb-outer));
+  box-shadow:0 0 60px 20px var(--orb-glow),0 0 120px 40px var(--orb-glow);
+  will-change:transform;
+  transition:background 1.2s ease,box-shadow 1.2s ease;
+}
+
+/* ─── STATE LABEL ─── */
+.state-label{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:15px;font-weight:400;letter-spacing:2px;
+  text-transform:uppercase;color:var(--label-color);
+  margin-bottom:16px;transition:color 0.8s;
+}
+
+/* ─── INSIGHT ─── */
+.insight{
+  font-size:15px;font-weight:300;font-style:italic;
+  color:var(--text-secondary);max-width:300px;
+  line-height:1.6;margin-bottom:32px;
+}
+
+/* ─── TIME METRIC ─── */
+.time-metric{margin-bottom:32px}
+.time-metric-label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:2.5px;color:var(--text-muted);margin-bottom:6px;
+}
+.time-metric-value{
+  font-family:'SF Mono',Menlo,'Courier New',monospace;
+  font-size:52px;font-weight:200;line-height:1;
+  margin-bottom:8px;color:var(--text-primary);
+}
+.time-metric-copy{
+  font-size:13px;color:var(--text-secondary);
+  max-width:280px;margin:0 auto;line-height:1.5;
+}
+
+/* ─── SCROLL CUE ─── */
+.scroll-cue{
+  position:absolute;bottom:24px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--text-muted);font-size:11px;letter-spacing:1px;
+}
+.scroll-cue .arrow{font-size:18px;animation:cue-bounce 2s ease-in-out infinite}
+@keyframes cue-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* ─── DETAIL ZONE ─── */
+.detail-zone{
+  position:relative;z-index:1;
+  padding:20px 20px 80px;
+  min-height:100vh;
+}
+
+/* ─── GLASS CARD ─── */
+.glass-card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:14px;padding:16px;
+  backdrop-filter:blur(8px);
+  will-change:transform,opacity,filter;
+}
+
+/* ─── READINESS HEADLINE ─── */
+.readiness-section{
+  text-align:center;padding:32px 0 28px;
+}
+.readiness-label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:3px;color:var(--text-muted);margin-bottom:8px;
+}
+.readiness-value{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:72px;font-weight:300;line-height:1;
+  color:var(--text-primary);margin-bottom:12px;
+}
+.readiness-copy{
+  font-size:14px;color:var(--text-secondary);
+  max-width:300px;margin:0 auto;line-height:1.5;
+}
+
+/* ─── FEELING GRID ─── */
+.feeling-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:10px;margin-bottom:14px;
+}
+.feeling-card{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-radius:14px;padding:14px 12px;
+  backdrop-filter:blur(8px);text-align:center;
+}
+.feeling-card .fc-label{
+  font-size:9px;font-weight:600;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--text-muted);margin-bottom:8px;
+}
+.feeling-card .fc-value{
+  font-family:'SF Mono',Menlo,'Courier New',monospace;
+  font-size:26px;font-weight:200;color:var(--text-primary);margin-bottom:4px;
+}
+.feeling-card .fc-desc{
+  font-size:10px;color:var(--text-secondary);line-height:1.4;
+}
+/* Sparkline card */
+.feeling-card .sparkline-wrap{height:36px;margin:4px 0}
+.feeling-card .sparkline-wrap svg{width:100%;height:100%}
+
+/* ─── SLEEP CARD ─── */
+.sleep-card{margin-bottom:14px}
+.sleep-card .card-label{
+  font-size:9px;font-weight:600;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--text-muted);margin-bottom:10px;
+}
+.sleep-main{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.sleep-duration{
+  font-family:'SF Mono',Menlo,'Courier New',monospace;
+  font-size:32px;font-weight:200;color:var(--text-primary);
+}
+.sleep-target{font-size:13px;color:var(--text-muted)}
+.sleep-status{
+  display:inline-block;font-size:11px;font-weight:600;
+  padding:3px 10px;border-radius:8px;margin-bottom:8px;
+  letter-spacing:0.5px;
+}
+.sleep-status.met{background:rgba(76,175,80,0.15);color:#81c784}
+.sleep-status.below{background:rgba(255,193,7,0.15);color:#ffc107}
+.sleep-status.well-below{background:rgba(244,67,54,0.15);color:#e57373}
+.sleep-insight{font-size:13px;color:var(--text-secondary);line-height:1.5}
+
+/* ─── SCIENCE LAYER ─── */
+.science-layer{margin-bottom:14px}
+.science-toggle{
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;font-size:13px;color:var(--text-secondary);
+  font-weight:500;letter-spacing:0.5px;padding:2px 0;
+}
+.science-arrow{transition:transform 0.3s;font-size:11px}
+.science-arrow.open{transform:rotate(180deg)}
+.science-content{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.4s ease,padding 0.3s;
+}
+.science-content.open{max-height:600px;padding-top:14px}
+.science-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.science-item{display:flex;flex-direction:column;gap:2px}
+.science-item .s-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted)}
+.science-item .s-val{
+  font-family:'SF Mono',Menlo,'Courier New',monospace;
+  font-size:22px;font-weight:200;color:var(--text-primary);
+}
+.science-item .s-unit{font-size:10px;color:var(--text-muted)}
+.science-item .s-desc{font-size:10px;color:var(--text-secondary);line-height:1.4;margin-top:2px}
+
+/* ─── DEBUG ─── */
+.debug-section{margin-bottom:14px}
+.debug-toggle{
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;font-size:12px;color:var(--text-muted);padding:2px 0;
+}
+.debug-content{max-height:0;overflow:hidden;transition:max-height 0.4s}
+.debug-content.open{max-height:500px;padding-top:12px}
+.debug-json{
+  font-family:'SF Mono',Menlo,'Courier New',monospace;
+  font-size:11px;color:#4ec9b0;white-space:pre-wrap;word-break:break-all;
+  margin-bottom:10px;
+}
+.debug-info{font-size:11px;color:var(--text-muted);line-height:2}
+.debug-info span{color:var(--text-secondary)}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" id="bgLayer"></div>
+<div class="conn-status" id="connStatus"></div>
+
+<!-- STICKY HEADER -->
+<div class="sticky-header" id="stickyHeader">
+  <div class="sticky-dot" id="stickyDot"></div>
+  <span class="sticky-state" id="stickyState">—</span>
+  <div class="sticky-right">
+    <span class="sticky-bpm" id="stickyBpm">--</span>
+    <span class="sticky-bpm-unit">bpm</span>
+  </div>
+</div>
+
+<!-- HOME ZONE -->
+<div class="home-zone" id="homeZone">
+  <div class="top-bar">
+    <div class="brand">Soma</div>
+    <div class="mode-toggle">
+      <span class="toggle-label active" id="labelDemo">Demo</span>
+      <div class="toggle-track" id="toggleTrack" onclick="toggleMode()">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span class="toggle-label" id="labelLive">Live</span>
+    </div>
+  </div>
+  <div class="ambient-bpm">
+    <span class="val" id="ambientBpmVal">--</span>
+    <span class="unit">bpm</span>
+  </div>
+  <div class="orb-wrapper" id="orbWrapper">
+    <div class="orb" id="orb"></div>
+  </div>
+  <div class="state-label" id="stateLabel">—</div>
+  <div class="insight" id="insight">Waiting for data…</div>
+  <div class="time-metric">
+    <div class="time-metric-label" id="timeMetricLabel">—</div>
+    <div class="time-metric-value" id="timeMetricValue">--</div>
+    <div class="time-metric-copy" id="timeMetricCopy">—</div>
+  </div>
+  <div class="scroll-cue" id="scrollCue">
+    <span class="arrow">↓</span>
+    <span>scroll for more</span>
+  </div>
+</div>
+
+<!-- DETAIL ZONE -->
+<div class="detail-zone" id="detailZone">
+  <div class="readiness-section">
+    <div class="readiness-label">READINESS</div>
+    <div class="readiness-value" id="readinessValue">--</div>
+    <div class="readiness-copy" id="readinessCopy">—</div>
+  </div>
+  <div class="feeling-grid" id="feelingGrid"></div>
+
+  <div class="sleep-card glass-card" id="sleepCard">
+    <div class="card-label">SLEEP</div>
+    <div class="sleep-main">
+      <span class="sleep-duration" id="sleepDuration">--</span>
+      <span class="sleep-target" id="sleepTarget">/ --h target</span>
+    </div>
+    <div class="sleep-status" id="sleepStatus">—</div>
+    <div class="sleep-insight" id="sleepInsight">—</div>
+  </div>
+
+  <div class="science-layer glass-card">
+    <div class="science-toggle" onclick="toggleScience()">
+      Under the hood
+      <span class="science-arrow" id="scienceArrow">▾</span>
+    </div>
+    <div class="science-content" id="scienceContent">
+      <div class="science-grid">
+        <div class="science-item"><span class="s-label">RMSSD</span><span class="s-val" id="sciRmssd">--</span><span class="s-unit">ms</span><span class="s-desc">Parasympathetic marker. Higher = more recovered.</span></div>
+        <div class="science-item"><span class="s-label">SDNN</span><span class="s-val" id="sciSdnn">--</span><span class="s-unit">ms</span><span class="s-desc">Overall HRV power. Reflects autonomic flexibility.</span></div>
+        <div class="science-item"><span class="s-label">pNN50</span><span class="s-val" id="sciPnn50">--</span><span class="s-unit">%</span><span class="s-desc">Adjacent intervals differing by &gt;50ms.</span></div>
+        <div class="science-item"><span class="s-label">Stress Index</span><span class="s-val" id="sciSi">--</span><span class="s-unit">SI</span><span class="s-desc">Baevsky SI. Sympathetic activation level.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="debug-section glass-card">
+    <div class="debug-toggle" onclick="toggleDebug()">
+      🔧 Debug <span class="debug-arrow" id="debugArrow">▾</span>
+    </div>
+    <div class="debug-content" id="debugContent">
+      <div class="debug-json" id="rawJson">Waiting for data…</div>
+      <div class="debug-info">
+        <div>Last update: <span id="lastUpdate">—</span></div>
+        <div>Updates: <span id="updateCount">0</span></div>
+        <div>Mode: <span id="infoMode">DEMO</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────
+let MODE = "demo";
+const WS_URL = "ws://192.168.4.1:80/";
+
+// ─── STATE ──────────────────────────────────────────
+let updateCounter = 0;
+const bpmHistory = [];
+const MAX_HISTORY = 30;
+let demoInterval = null;
+let liveWs = null;
+let currentBpm = 72;
+let targetBpm = 72;
+let orbPhase = 0;
+let lastOrbTime = 0;
+let scrollProgress = 0;
+
+// ─── STATE THEME MAP ────────────────────────────────
+const themes = {
+  "Calm & Recovered": {
+    orbInner:"#D8ECD4",orbMid:"#B8D4B0",orbOuter:"#90B888",
+    orbGlow:"rgba(184,212,176,0.25)",label:"#B8D4B0",accent:"#B8D4B0",
+    bgR1:"rgba(144,184,136,0.12)",bgR2:"rgba(184,212,176,0.06)",bgTint:"#0a100a"
+  },
+  "Mildly Stressed": {
+    orbInner:"#F4DEC4",orbMid:"#E8C4A0",orbOuter:"#D4A078",
+    orbGlow:"rgba(232,196,160,0.25)",label:"#E8C4A0",accent:"#E8C4A0",
+    bgR1:"rgba(212,160,120,0.12)",bgR2:"rgba(232,196,160,0.06)",bgTint:"#100c08"
+  },
+  "Fatigued": {
+    orbInner:"#E4E0F0",orbMid:"#C8C0D8",orbOuter:"#A898C0",
+    orbGlow:"rgba(200,192,216,0.25)",label:"#C8C0D8",accent:"#C8C0D8",
+    bgR1:"rgba(168,152,192,0.12)",bgR2:"rgba(200,192,216,0.06)",bgTint:"#0c0a10"
+  },
+  "Under Load": {
+    orbInner:"#F4D4CC",orbMid:"#E4B0A0",orbOuter:"#C88070",
+    orbGlow:"rgba(228,176,160,0.30)",label:"#E4B0A0",accent:"#E4B0A0",
+    bgR1:"rgba(200,128,112,0.15)",bgR2:"rgba(228,176,160,0.08)",bgTint:"#100808"
+  }
+};
+
+// ─── COMPUTED METRICS ───────────────────────────────
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+
+function computeMetrics(d){
+  const rmssdNorm = clamp((d.rmssd-10)/90*100,0,100);
+  const siInvNorm = clamp((10-d.stress_index)/9.5*100,0,100);
+  const spo2Norm = clamp((d.spo2-90)/10*100,0,100);
+  return {
+    readiness: Math.round(rmssdNorm*0.4 + siInvNorm*0.4 + spo2Norm*0.2),
+    energy: d.recovery_score,
+    steadiness: Math.round(rmssdNorm),
+    tension: Math.round(clamp(d.stress_index/10*100,0,100)),
+    focus: Math.round(clamp((d.rmssd/d.sdnn)*50,0,100)),
+    clarity: Math.round(spo2Norm)
+  };
+}
+
+// ─── TIME-AWARE SYSTEM ──────────────────────────────
+function getTimeSlot(){
+  const h=new Date().getHours();
+  if(h>=5&&h<11) return "morning";
+  if(h>=11&&h<16) return "afternoon";
+  if(h>=16&&h<20) return "evening";
+  return "night";
+}
+
+const homeMetricKey={morning:"readiness",afternoon:"focus",evening:"tension",night:"steadiness"};
+const homeMetricLabel={readiness:"READINESS",focus:"FOCUS",tension:"TENSION",steadiness:"STEADINESS"};
+
+function getTimeMetricCopy(key,val){
+  const c={
+    readiness:[[75,"Good capacity today. Your body recovered well."],[50,"Moderate capacity. Steady effort is fine."],[25,"Your body needs more than your mind thinks."],[0,"Rest is the most productive thing right now."]],
+    focus:[[67,"Locked in. Good conditions for deep work."],[34,"Moderate coherence. Short breaks will help."],[0,"Scattered state. Avoid demanding cognitive tasks."]],
+    tension:[[67,"High tension carried forward. Wind down intentionally."],[34,"Some load still present. A walk would help clear it."],[0,"Minimal load. Your body handled today well."]],
+    steadiness:[[67,"Your nervous system is settling. Good conditions for sleep."],[34,"Still some activation. Give it more time to come down."],[0,"Body still running hot. Avoid screens and stimulation."]]
+  };
+  const ranges=c[key]||[];
+  for(const[threshold,text] of ranges){if(val>=threshold) return text;}
+  return "";
+}
+
+function getReadinessCopy(val){
+  if(val>=75) return "Good capacity today. Your body recovered well.";
+  if(val>=50) return "Moderate capacity. Steady effort is fine.";
+  if(val>=25) return "Your body needs more than your mind thinks.";
+  return "Rest is the most productive thing right now.";
+}
+
+// Card sequences per time slot (after the home metric)
+const cardSeq={
+  morning:["recovery","sleep","energy","steadiness","clarity","tension"],
+  afternoon:["tension","energy","steadiness","readiness","clarity","sleep"],
+  evening:["steadiness","energy","focus","recovery","clarity","sleep"],
+  night:["recovery","tension","energy","clarity","focus","sleep"]
+};
+
+// ─── METRIC DEFINITIONS ─────────────────────────────
+function getMetricDef(key,m,d){
+  const defs={
+    readiness:{label:"Readiness",value:m.readiness,desc:"Overall capacity for today"},
+    recovery:{label:"Recovery",value:d.recovery_score,desc:"How well your body repaired"},
+    energy:{label:"Energy",value:m.energy,desc:"Physical reserves available"},
+    steadiness:{label:"Steadiness",value:m.steadiness,desc:"Nervous system stability"},
+    tension:{label:"Tension",value:m.tension,desc:"Autonomic load carried"},
+    focus:{label:"Focus",value:m.focus,desc:"Cardiac coherence level"},
+    clarity:{label:"Clarity",value:m.clarity,desc:"Cognitive sharpness from O₂"},
+    sleep:{label:"Sleep",value:"7h12m",desc:"Duration last night"},
+    bpm:{label:"Heart Rate",value:d.bpm,desc:"Beats per minute"}
+  };
+  return defs[key]||{label:key,value:"--",desc:""};
+}
+
+// ─── SLEEP DATA (simulated) ─────────────────────────
+const sleepByState={
+  "Calm & Recovered":{dur:"7h 48m",target:"8h",status:"met",statusText:"Met",insight:"You hit your target last night. Your body had time to repair."},
+  "Mildly Stressed":{dur:"6h 15m",target:"8h",status:"below",statusText:"Below",insight:"Just under your target. A consistent bedtime would help."},
+  "Fatigued":{dur:"5h 30m",target:"8h",status:"well-below",statusText:"Well below",insight:"You slept less than your body needs. Recovery will be slower today."},
+  "Under Load":{dur:"6h 42m",target:"8h",status:"below",statusText:"Below",insight:"Just under your target. A consistent bedtime would help."}
+};
+
+// ─── DEMO DATA ──────────────────────────────────────
+const demoStates=[
+  {bpm:62,spo2:98,rmssd:48.2,pnn50:32.1,sdnn:58.4,stress_index:1.2,stress_level:"Low",recovery_score:82,wellness_state:"Calm & Recovered",insight:"Your nervous system is settled. A good time to focus or rest deeply."},
+  {bpm:78,spo2:97,rmssd:32.8,pnn50:20.5,sdnn:40.1,stress_index:3.5,stress_level:"Moderate",recovery_score:55,wellness_state:"Mildly Stressed",insight:"Your body is carrying some load. Slow breathing for a few minutes may help."},
+  {bpm:65,spo2:97,rmssd:38.0,pnn50:18.3,sdnn:35.7,stress_index:1.5,stress_level:"Low",recovery_score:24,wellness_state:"Fatigued",insight:"You are calm but your body has not fully recovered. Rest will help more than activity right now."},
+  {bpm:96,spo2:96,rmssd:18.4,pnn50:8.2,sdnn:22.5,stress_index:7.2,stress_level:"High",recovery_score:31,wellness_state:"Under Load",insight:"Your autonomic system is working hard. Try to step away and give your body a moment to settle."}
+];
+let demoIndex=0;
+
+// ─── DATA LAYER ─────────────────────────────────────
+function stopAll(){
+  if(demoInterval){clearInterval(demoInterval);demoInterval=null}
+  if(liveWs){liveWs.close();liveWs=null}
+}
+
+function startDemo(){
+  stopAll();
+  updateUI(demoStates[demoIndex]);
+  demoInterval=setInterval(()=>{
+    demoIndex=(demoIndex+1)%demoStates.length;
+    const b=demoStates[demoIndex];
+    updateUI({...b,
+      bpm:b.bpm+Math.floor(Math.random()*5-2),
+      spo2:clamp(b.spo2+Math.floor(Math.random()*3-1),90,100),
+      rmssd:+(b.rmssd+(Math.random()*4-2)).toFixed(1),
+      pnn50:+(b.pnn50+(Math.random()*3-1.5)).toFixed(1),
+      sdnn:+(b.sdnn+(Math.random()*4-2)).toFixed(1),
+      stress_index:+(b.stress_index+(Math.random()*0.4-0.2)).toFixed(1),
+      recovery_score:clamp(b.recovery_score+Math.floor(Math.random()*5-2),0,100)
+    });
+  },6000);
+}
+
+function startLive(){
+  stopAll();showConn("Connecting to ESP32…","connecting");
+  liveWs=new WebSocket(WS_URL);
+  liveWs.onopen=()=>{showConn("Connected ✓","connected");setTimeout(hideConn,2500)};
+  liveWs.onmessage=(e)=>{try{updateUI(JSON.parse(e.data))}catch(err){showConn("Parse error: "+err.message,"error")}};
+  liveWs.onerror=()=>showConn("WebSocket error — check ESP32","error");
+  liveWs.onclose=()=>{if(MODE==="live"){showConn("Connection lost. Reconnecting…","error");setTimeout(startLive,3000)}};
+}
+
+// ─── THEME APPLICATION ──────────────────────────────
+function applyTheme(state){
+  const t=themes[state];if(!t) return;
+  const r=document.documentElement.style;
+  r.setProperty("--orb-inner",t.orbInner);r.setProperty("--orb-mid",t.orbMid);
+  r.setProperty("--orb-outer",t.orbOuter);r.setProperty("--orb-glow",t.orbGlow);
+  r.setProperty("--label-color",t.label);r.setProperty("--accent",t.accent);
+  r.setProperty("--bg-radial-1",t.bgR1);r.setProperty("--bg-radial-2",t.bgR2);
+  r.setProperty("--bg-tint",t.bgTint);
+}
+
+// ─── ORB BREATHING (rAF) ────────────────────────────
+function animateOrb(timestamp){
+  if(!lastOrbTime) lastOrbTime=timestamp;
+  const dt=(timestamp-lastOrbTime)/1000;
+  lastOrbTime=timestamp;
+
+  // Smooth BPM interpolation
+  currentBpm+=(targetBpm-currentBpm)*0.05;
+  const bpm=currentBpm;
+
+  const cycleDur=clamp(300/bpm,0.8,6.0);
+  const maxScale=1.20-(bpm-40)/140*0.14;
+  const minScale=1.0;
+
+  orbPhase+=dt/cycleDur;
+  if(orbPhase>1) orbPhase-=1;
+
+  const t=0.5-0.5*Math.cos(orbPhase*2*Math.PI);
+  const scale=minScale+(maxScale-minScale)*t;
+  document.getElementById("orb").style.transform="scale("+scale+")";
+
+  requestAnimationFrame(animateOrb);
+}
+
+// ─── SCROLL SYSTEM ──────────────────────────────────
+function handleScroll(){
+  const vh=window.innerHeight;
+  const sy=window.scrollY;
+  scrollProgress=clamp(sy/(vh*0.6),0,1);
+
+  // Home fade/blur
+  const home=document.getElementById("homeZone");
+  home.style.opacity=1-scrollProgress;
+  home.style.filter="blur("+scrollProgress*12+"px)";
+
+  // Sticky header
+  const sticky=document.getElementById("stickyHeader");
+  if(scrollProgress>0.5) sticky.classList.add("visible");
+  else sticky.classList.remove("visible");
+
+  // Detail cards entrance
+  const cards=document.querySelectorAll("#detailZone .glass-card, .feeling-card, .readiness-section");
+  const detailProgress=clamp((scrollProgress-0.3)/0.7,0,1);
+  cards.forEach((c,i)=>{
+    const stagger=clamp(detailProgress-i*0.04,0,1);
+    const ease=stagger*stagger*(3-2*stagger); // smoothstep
+    c.style.opacity=ease;
+    c.style.transform="scale("+(0.88+0.12*ease)+") translateY("+(20*(1-ease))+"px)";
+    c.style.filter="blur("+((1-ease)*6)+"px)";
+  });
+
+  // Scroll cue fade
+  document.getElementById("scrollCue").style.opacity=clamp(1-scrollProgress*4,0,1);
+}
+
+// ─── FEELING CARDS RENDER ───────────────────────────
+function renderFeelingCards(data,metrics){
+  const slot=getTimeSlot();
+  const seq=cardSeq[slot];
+  const grid=document.getElementById("feelingGrid");
+  grid.innerHTML="";
+  seq.forEach(key=>{
+    const def=getMetricDef(key,metrics,data);
+    const card=document.createElement("div");
+    card.className="feeling-card";
+    if(key==="bpm"){
+      card.innerHTML='<div class="fc-label">'+def.label+'</div><div class="fc-value">'+def.value+'</div><div class="sparkline-wrap"><svg id="sparkSvg" viewBox="0 0 100 36" preserveAspectRatio="none"><polyline id="sparkLine" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" points=""/></svg></div>';
+    } else {
+      card.innerHTML='<div class="fc-label">'+def.label+'</div><div class="fc-value">'+def.value+'</div><div class="fc-desc">'+def.desc+'</div>';
+    }
+    grid.appendChild(card);
+  });
+}
+
+// ─── UI UPDATE ──────────────────────────────────────
+function updateUI(data){
+  updateCounter++;
+  targetBpm=data.bpm;
+  const m=computeMetrics(data);
+  const slot=getTimeSlot();
+  const hmKey=homeMetricKey[slot];
+
+  // Apply theme
+  applyTheme(data.wellness_state);
+
+  // Home zone
+  document.getElementById("ambientBpmVal").textContent=data.bpm;
+  document.getElementById("stateLabel").textContent=data.wellness_state;
+  document.getElementById("insight").textContent=data.insight;
+
+  // Time metric
+  const hmVal=m[hmKey]!==undefined?m[hmKey]:data[hmKey];
+  document.getElementById("timeMetricLabel").textContent=homeMetricLabel[hmKey];
+  document.getElementById("timeMetricValue").textContent=hmVal;
+  document.getElementById("timeMetricCopy").textContent=getTimeMetricCopy(hmKey,hmVal);
+
+  // Sticky header
+  document.getElementById("stickyState").textContent=data.wellness_state;
+  document.getElementById("stickyBpm").textContent=data.bpm;
+
+  // Readiness (always shown at top of detail)
+  document.getElementById("readinessValue").textContent=m.readiness;
+  document.getElementById("readinessCopy").textContent=getReadinessCopy(m.readiness);
+
+  // Feeling cards
+  renderFeelingCards(data,m);
+
+  // BPM sparkline
+  bpmHistory.push(data.bpm);
+  if(bpmHistory.length>MAX_HISTORY) bpmHistory.shift();
+  updateSparkline();
+
+  // Sleep card
+  const sl=sleepByState[data.wellness_state]||sleepByState["Calm & Recovered"];
+  document.getElementById("sleepDuration").textContent=sl.dur;
+  document.getElementById("sleepTarget").textContent="/ "+sl.target+" target";
+  const ss=document.getElementById("sleepStatus");
+  ss.textContent=sl.statusText;ss.className="sleep-status "+sl.status;
+  document.getElementById("sleepInsight").textContent=sl.insight;
+
+  // Science layer
+  document.getElementById("sciRmssd").textContent=data.rmssd;
+  document.getElementById("sciSdnn").textContent=data.sdnn;
+  document.getElementById("sciPnn50").textContent=data.pnn50;
+  document.getElementById("sciSi").textContent=data.stress_index;
+
+  // Debug
+  document.getElementById("rawJson").textContent=JSON.stringify(data,null,2);
+  document.getElementById("lastUpdate").textContent=new Date().toLocaleTimeString();
+  document.getElementById("updateCount").textContent=updateCounter;
+  document.getElementById("infoMode").textContent=MODE.toUpperCase();
+
+  // Trigger scroll recalc
+  handleScroll();
+}
+
+// ─── SPARKLINE ──────────────────────────────────────
+function updateSparkline(){
+  if(bpmHistory.length<2) return;
+  const line=document.getElementById("sparkLine");
+  if(!line) return;
+  const w=100,h=36,p=2;
+  const mn=Math.min(...bpmHistory)-3,mx=Math.max(...bpmHistory)+3,rng=mx-mn||1;
+  const pts=bpmHistory.map((v,i)=>{
+    const x=(i/(MAX_HISTORY-1))*w;
+    const y=h-p-((v-mn)/rng)*(h-p*2);
+    return x+","+y;
+  }).join(" ");
+  line.setAttribute("points",pts);
+}
+
+// ─── CONNECTION STATUS ──────────────────────────────
+function showConn(msg,type){
+  const el=document.getElementById("connStatus");
+  el.textContent=msg;el.className="conn-status "+type+" show";
+}
+function hideConn(){document.getElementById("connStatus").classList.remove("show")}
+
+// ─── TOGGLES ────────────────────────────────────────
+function toggleMode(){
+  MODE=MODE==="demo"?"live":"demo";
+  document.getElementById("toggleTrack").classList.toggle("live",MODE==="live");
+  document.getElementById("labelDemo").classList.toggle("active",MODE==="demo");
+  document.getElementById("labelLive").classList.toggle("active",MODE==="live");
+  if(MODE==="demo"){hideConn()}
+  bpmHistory.length=0;
+  MODE==="live"?startLive():startDemo();
+}
+function toggleScience(){
+  document.getElementById("scienceContent").classList.toggle("open");
+  document.getElementById("scienceArrow").classList.toggle("open");
+}
+function toggleDebug(){
+  document.getElementById("debugContent").classList.toggle("open");
+  document.getElementById("debugArrow").classList.toggle("open");
+}
+
+// ─── INIT ───────────────────────────────────────────
+document.addEventListener("DOMContentLoaded",()=>{
+  window.addEventListener("scroll",handleScroll,{passive:true});
+  handleScroll();
+  requestAnimationFrame(animateOrb);
+  MODE==="live"?startLive():startDemo();
+});
+</script>
+</body>
+</html>
