@@ -6,6 +6,8 @@
 <title>Soma — V3.1</title>
 <!-- Three.js for Vanilla WebGL Blob -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Phosphor Icons -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
   /* ─── RESET & FONTS ─── */
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,7 +81,7 @@
     display: flex;
     align-items: flex-end; /* Push to bottom of its container */
     justify-content: center;
-    padding-bottom: 20px;
+    padding-bottom: 40px; /* Pushed upwards by 20px */
     pointer-events: none; /* Let clicks pass through to UI */
     will-change: opacity, transform;
   }
@@ -99,44 +101,96 @@
     will-change: opacity;
   }
 
-  .home-number {
-    font-family: var(--font-title);
-    font-size: 110px;
-    font-weight: 300;
-    line-height: 1;
-    margin-bottom: 4px;
-    letter-spacing: -2px;
-    text-shadow: 0 4px 32px rgba(0,0,0,0.4);
+  /* ─── HOME INSIGHT CARD ─── */
+  .home-insight-card {
+    width: 100%;
+    max-width: 360px;
+    color: white;
+    text-align: center;
+    position: relative;
+    padding: 32px 24px;
+    margin: -24px auto 0 auto;
+  }
+
+  .home-arc-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 116px;
+  }
+
+  .home-arc-wrapper svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  .home-arc-content {
+    position: absolute;
+    top: 77%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-arc-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: rgba(255,255,255,0.9);
+    border: none;
+    margin-bottom: 10px;
   }
 
   .home-label {
+    font-family: var(--font-body);
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 5px;
-    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.8);
     margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  .home-number {
+    font-family: var(--font-body);
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 0;
   }
 
   .home-copy {
     font-family: var(--font-title);
-    font-size: 26px;
+    font-size: 33px;
     font-weight: 400;
-    line-height: 1.25;
-    color: var(--text-primary);
+    line-height: 1.2;
+    color: rgba(255,255,255,0.85);
     margin-bottom: 12px;
   }
 
   .home-subcopy {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.6;
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.5;
     max-width: 300px;
+    margin: 0 auto;
   }
 
   .scroll-cue {
     position: absolute;
-    bottom: 40px;
+    bottom: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -346,6 +400,243 @@
     overflow: visible;
   }
 
+  /* ── NEW VISUALIZATION CSS ── */
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .chip i { font-size: 14px; opacity: 0.8; }
+
+  .big-num {
+    font-family: var(--font-title);
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+  }
+
+  .sub-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  .insight {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ── READINESS: gradient range bar ── */
+  .range-wrap { margin: 20px 0 18px; position: relative; }
+  .range-track {
+    height: 5px;
+    border-radius: 4px;
+    background: linear-gradient(90deg,
+      rgba(144,184,136,0.9) 0%,
+      rgba(244,222,196,0.9) 50%,
+      rgba(200,128,112,0.9) 100%
+    );
+    position: relative;
+  }
+  .range-dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+    transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .range-ends {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  /* ── STEADINESS: hourly strip ── */
+  .hourly-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 4px 0 0;
+  }
+  .hour-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .hour-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+  .hour-bar-wrap {
+    width: 100%;
+    height: 48px;
+    display: flex;
+    align-items: flex-end;
+  }
+  .hour-bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hour-val {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+
+  /* ── ENERGY: two-up tiles ── */
+  .two-up-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .tile {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-highlight);
+    border-radius: 24px;
+    padding: 24px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+  }
+  .tile:active {
+    transform: scale(0.98);
+    background: rgba(255,255,255,0.04);
+  }
+  .tile .chip { margin-bottom: 12px; }
+  .tile .big-num { font-size: 42px; margin-bottom: 2px; }
+
+  /* ── FOCUS: day-forecast rows ── */
+  .focus-rows { margin: 16px 0; }
+  .focus-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .focus-row:last-child { border-bottom: none; }
+  .focus-row-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    width: 52px;
+    flex-shrink: 0;
+  }
+  .focus-row-low {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    width: 28px;
+    text-align: right;
+  }
+  .focus-bar-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .focus-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    position: absolute;
+    top: 0;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .focus-row-high {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  /* ── SLEEP: duration bar ── */
+  .sleep-bar-wrap { margin: 18px 0 12px; position: relative; }
+  .sleep-track {
+    height: 6px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 6px;
+    position: relative;
+    overflow: visible;
+  }
+  .sleep-fill {
+    height: 100%;
+    border-radius: 6px;
+    position: absolute;
+    top: 0; left: 0;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sleep-target-line {
+    position: absolute;
+    top: -5px;
+    width: 2px;
+    height: 16px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+  .sleep-target-label {
+    position: absolute;
+    top: -20px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .sleep-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .sleep-week {
+    display: flex;
+    gap: 6px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    align-items: flex-end;
+  }
+  .sleep-day-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .sleep-day-bar-wrap { width: 100%; height: 36px; display: flex; align-items: flex-end; }
+  .sleep-day-bar { width: 100%; border-radius: 4px 4px 0 0; }
+  .sleep-day-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); }
+
   /* ─── DEVELOPER CONTROLS ─── */
   .dev-controls {
     position: fixed;
@@ -353,6 +644,7 @@
     z-index: 100;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 16px 20px;
     background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
     pointer-events: auto;
@@ -375,6 +667,75 @@
     cursor: pointer;
   }
   select option { background: #111; color: white; }
+
+  /* ─── MODE TOGGLE ─── */
+  .mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .mode-toggle .label {
+    color: rgba(255,255,255,0.35);
+    transition: color 0.3s;
+  }
+  .mode-toggle .label.active {
+    color: rgba(255,255,255,0.95);
+  }
+  .toggle-track {
+    width: 40px; height: 22px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .toggle-track.live {
+    background: rgba(74, 166, 255, 0.5);
+    border-color: rgba(74, 166, 255, 0.3);
+  }
+  .toggle-thumb {
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 1px; left: 2px;
+    transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .toggle-track.live .toggle-thumb { left: 19px; }
+
+  /* ─── CONNECTION STATUS ─── */
+  .connection-status {
+    position: fixed;
+    top: 56px; left: 20px; right: 20px;
+    z-index: 99;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 16px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    transition: opacity 0.3s;
+    color: rgba(255,255,255,0.9);
+    background: rgba(255, 170, 50, 0.2);
+    border: 1px solid rgba(255, 170, 50, 0.15);
+  }
+  .connection-status.error {
+    background: rgba(255, 80, 80, 0.2);
+    border-color: rgba(255, 80, 80, 0.15);
+  }
+  .connection-status.connected {
+    background: rgba(80, 200, 120, 0.2);
+    border-color: rgba(80, 200, 120, 0.15);
+  }
+
+
 
   /* ─── DETAIL VIEW OVERLAY ─── */
   #detailView {
@@ -591,6 +952,61 @@
   .hc-chart { height: 100px; width: 100%; position: relative; }
   .hc-chart svg { width: 100%; height: 100%; overflow: visible; }
 
+  /* ─── STICKY TOP BAR ─── */
+  .sticky-top-bar {
+    position: fixed;
+    top: -60px;
+    left: 0;
+    right: 0;
+    height: 54px;
+    background: rgba(11, 17, 14, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.3);
+  }
+  .sticky-top-bar.visible {
+    top: 0;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .stb-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stb-orb {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .stb-val {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .stb-unit {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
 </style>
 </head>
 <body>
@@ -606,6 +1022,20 @@
   <!-- BACKGROUNDS -->
   <div class="bg-layer" id="bgLayer"></div>
   <div class="bg-noise"></div>
+
+  <!-- STICKY TOP BAR -->
+  <div class="sticky-top-bar" id="stickyTopBar">
+    <div class="stb-item">
+      <div class="stb-orb" id="tinyOrbContainer"></div>
+      <span class="stb-val" id="stbBpm">--</span>
+      <span class="stb-unit">bpm</span>
+    </div>
+    <div class="stb-item">
+      <i class="ph-fill ph-drop" style="color: #ff4d4d; font-size: 14px;"></i>
+      <span class="stb-val" id="stbSpo2">--</span>
+      <span class="stb-unit">%</span>
+    </div>
+  </div>
   
   <!-- FIXED THREE.JS ORB -->
   <div class="fixed-orb-container" id="orbContainer">
@@ -614,28 +1044,51 @@
 
   <!-- FIXED HOME CONTENT -->
   <div class="fixed-home" id="homeContent">
-    <div class="home-number" id="homeNumber">--</div>
-    <div class="home-label" id="homeLabel">--</div>
-    <div class="home-copy" id="homeCopy">--</div>
-    <div class="home-subcopy" id="homeSubcopy">--</div>
+    <div class="home-insight-card">
+      <div class="home-arc-wrapper">
+        <svg viewBox="0 0 200 85">
+          <defs>
+            <linearGradient id="homeArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
+              <stop offset="100%" stop-color="#ffffff"/>
+            </linearGradient>
+          </defs>
+          <path d="M 5 60 A 140 140 0 0 1 195 60" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+          <path id="homeArcFill" d="M 5 60 A 140 140 0 0 1 195 60" fill="none" stroke="url(#homeArcGrad)" stroke-width="3" stroke-linecap="round" stroke-dasharray="208.6" stroke-dashoffset="104.3" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);"/>
+          <text x="5" y="75" fill="rgba(255,255,255,0.6)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">0</text>
+          <text x="195" y="75" fill="rgba(255,255,255,0.6)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">100</text>
+          <circle cx="49" cy="32.5" r="1.5" fill="rgba(255,255,255,0.8)"/>
+          <circle cx="100" cy="12.8" r="1.5" fill="rgba(255,255,255,0.8)"/>
+          <circle cx="151" cy="32.5" r="1.5" fill="rgba(255,255,255,0.8)"/>
+        </svg>
+        <div class="home-arc-content">
+          <div class="home-arc-icon">
+            <i class="ph ph-plant" id="homeIcon"></i>
+          </div>
+          <div class="home-label" id="homeLabel">--</div>
+          <div class="home-number" id="homeNumber">--</div>
+        </div>
+      </div>
+      
+      <div class="home-copy" id="homeCopy">--</div>
+      <div class="home-subcopy" id="homeSubcopy">--</div>
+    </div>
     
     <div class="scroll-cue" id="scrollCue">
-      Scroll
+      Insights
       <div class="scroll-cue-line"></div>
     </div>
   </div>
 
   <!-- DEVELOPER CONTROLS -->
   <div class="dev-controls">
-    <div class="dev-select-group">
+    <div class="dev-select-group" id="demoSelects">
       <select id="stateSelect" onchange="manualUpdate()">
         <option value="Calm & Recovered">Calm & Recovered</option>
         <option value="Mildly Stressed">Mildly Stressed</option>
         <option value="Fatigued">Fatigued</option>
         <option value="Under Load">Under Load</option>
       </select>
-    </div>
-    <div class="dev-select-group">
       <select id="timeSelect" onchange="manualUpdate()">
         <option value="morning">Morning (Readiness)</option>
         <option value="afternoon">Afternoon (Focus)</option>
@@ -643,40 +1096,242 @@
         <option value="night">Night (Steadiness)</option>
       </select>
     </div>
+    <div class="mode-toggle">
+      <span class="label active" id="labelDemo">Demo</span>
+      <div class="toggle-track" id="toggleTrack" onclick="toggleMode()">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span class="label" id="labelLive">Live</span>
+    </div>
   </div>
+  <div class="connection-status" id="connStatus"></div>
 
   <!-- SCROLLING DETAIL CONTENT -->
   <div class="scroll-wrapper" id="scrollWrapper">
-    
-    <div class="glass-card" id="contextCard">
-      <div class="card-header">
-        <div class="card-icon">⚡</div>
-        <div class="card-title-small" id="contextCardTitle">Context</div>
-      </div>
-      <div class="card-title-serif" id="contextCardHeadline">Review your day</div>
-      <div class="card-body" id="contextCardBody">
-        Your biometrics show minor signs of something straining your body. Pay attention to how you're feeling today.
-      </div>
-      <button class="card-button">Learn more</button>
-    </div>
 
-    <div class="metrics-stack" id="statsGrid">
-      <!-- Populated by JS -->
-    </div>
+    <div id="statsGrid">
+      <!-- ① READINESS -->
+      <div class="glass-card" style="cursor: pointer;" onclick="openDetailView('energy')">
+        <div class="chip">
+          <i class="ph-fill ph-lightning"></i>
+          Readiness
+        </div>
+        <p class="big-num" id="cardReadinessVal" style="color:#D8ECD4">78</p>
+        <p class="sub-label">out of 100</p>
+        <div class="range-wrap">
+          <div class="range-track">
+            <div class="range-dot" id="cardReadinessDot" style="left:78%"></div>
+          </div>
+          <div class="range-ends"><span>Depleted</span><span>Optimal</span></div>
+        </div>
+        <p class="insight" id="cardReadinessInsight">Body's recovered well overnight. Good window to take on more than yesterday.</p>
+      </div>
 
-    <div class="glass-card" style="position: relative; cursor: pointer;" onclick="openDetailView('sleep')">
-      <div class="card-header">
-        <div class="card-icon">🌙</div>
-        <div class="card-title-small">Sleep & Recovery</div>
+      <!-- ② STEADINESS: hourly strip -->
+      <div class="glass-card" style="cursor: pointer;" onclick="openDetailView('steadiness')">
+        <div class="chip">
+          <i class="ph-fill ph-waves"></i>
+          Steadiness · last 7 hours
+        </div>
+        <div class="hourly-strip">
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" style="height:72%; background:rgba(200,192,216,0.55);"></div></div>
+            <div class="hour-val" style="color:rgba(200,192,216,0.7)">68</div>
+            <div class="hour-label">1pm</div>
+          </div>
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" style="height:78%; background:rgba(200,192,216,0.6);"></div></div>
+            <div class="hour-val" style="color:rgba(200,192,216,0.7)">72</div>
+            <div class="hour-label">2pm</div>
+          </div>
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" style="height:82%; background:rgba(200,192,216,0.65);"></div></div>
+            <div class="hour-val" style="color:rgba(200,192,216,0.75)">76</div>
+            <div class="hour-label">3pm</div>
+          </div>
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" style="height:65%; background:rgba(200,192,216,0.5);"></div></div>
+            <div class="hour-val" style="color:rgba(200,192,216,0.6)">61</div>
+            <div class="hour-label">4pm</div>
+          </div>
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" style="height:50%; background:rgba(200,192,216,0.42);"></div></div>
+            <div class="hour-val" style="color:rgba(200,192,216,0.5)">47</div>
+            <div class="hour-label">5pm</div>
+          </div>
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" style="height:38%; background:rgba(200,192,216,0.35);"></div></div>
+            <div class="hour-val" style="color:rgba(200,192,216,0.45)">36</div>
+            <div class="hour-label">6pm</div>
+          </div>
+          <div class="hour-col">
+            <div class="hour-bar-wrap"><div class="hour-bar" id="cardSteadinessBarNow" style="height:30%; background:rgba(200,192,216,0.28); border: 1px solid rgba(200,192,216,0.5); border-bottom:none;"></div></div>
+            <div class="hour-val" id="cardSteadinessValNow" style="color:#C8C0D8; font-weight:400">29</div>
+            <div class="hour-label" style="color:rgba(255,255,255,0.45)">Now</div>
+          </div>
+        </div>
+        <p class="insight" style="margin-top:16px" id="cardSteadinessInsight">Dropping steadily since mid-afternoon. Everything's feeling louder than it should.</p>
       </div>
-      <div class="card-title-serif" id="sleepTitle">7h 48m</div>
-      <div class="card-body" id="sleepBody" style="margin-bottom: 0;">
-        You hit your target last night. Your body had time to repair and process the load from yesterday.
+
+      <!-- ③ TENSION + ENERGY: two-up -->
+      <div class="two-up-container">
+        <div class="tile" onclick="openDetailView('stress')">
+          <div class="chip">
+            <i class="ph-fill ph-activity"></i>
+            Tension
+          </div>
+          <p class="big-num" id="cardTensionVal" style="color:#F4DEC4; font-size:42px">71</p>
+          <p class="sub-label">out of 100</p>
+          <svg width="80" height="80" viewBox="0 0 80 80" style="display:block; margin: 8px 0 12px;">
+            <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+            <circle cx="40" cy="40" r="30" fill="none" stroke="url(#tensionArc)" stroke-width="6"
+              stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="54" id="cardTensionArc"
+              transform="rotate(-90 40 40)"/>
+            <defs>
+              <linearGradient id="tensionArc" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#D4A078"/>
+                <stop offset="100%" stop-color="#F4DEC4"/>
+              </linearGradient>
+            </defs>
+            <text x="40" y="44" text-anchor="middle" font-family="var(--font-title)" font-size="14" fill="rgba(255,255,255,0.3)" id="cardTensionLabel">high</text>
+          </svg>
+        </div>
+        <div class="tile" onclick="openDetailView('energy')">
+          <div class="chip">
+            <i class="ph-fill ph-sun"></i>
+            Energy
+          </div>
+          <p class="big-num" id="cardEnergyVal" style="color:#D8ECD4; font-size:42px">54</p>
+          <p class="sub-label">out of 100</p>
+          <div style="margin: 8px 0 12px;">
+            <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:9px; color:rgba(255,255,255,0.2); margin-bottom:5px; text-transform: uppercase;">
+              <span>Low</span><span>High</span>
+            </div>
+            <div style="height:4px; background:rgba(255,255,255,0.07); border-radius:4px; position:relative;">
+              <div id="cardEnergyBar" style="position:absolute; height:100%; width:54%; background:linear-gradient(90deg,#90B888,#D8ECD4); border-radius:4px; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+            </div>
+            <div style="margin-top:10px; font-family:var(--font-mono); font-size:9px; color:rgba(255,255,255,0.2);">
+              <span style="color:rgba(255,255,255,0.35)" id="cardEnergyTrend">↓ 12</span>&nbsp;since morning
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="metric-chevron">&#x276F;</div>
+
+      <!-- ④ FOCUS: day-range rows -->
+      <div class="glass-card" style="cursor: pointer;" onclick="openDetailView('hr')">
+        <div class="chip">
+          <i class="ph-fill ph-target"></i>
+          Focus · today vs this week
+        </div>
+        <div class="focus-rows">
+          <div class="focus-row">
+            <span class="focus-row-label" style="color:var(--text-primary); font-weight:500">Now</span>
+            <span class="focus-row-low">42</span>
+            <div class="focus-bar-track">
+              <div class="focus-bar-fill" id="cardFocusBarNow" style="left:10%; width:52%; background:linear-gradient(90deg,rgba(144,184,136,0.4),rgba(144,184,136,0.9));"></div>
+            </div>
+            <span class="focus-row-high" style="color:#B8D4B0" id="cardFocusValNow">84</span>
+          </div>
+          <div class="focus-row">
+            <span class="focus-row-label">Mon</span>
+            <span class="focus-row-low">50</span>
+            <div class="focus-bar-track">
+              <div class="focus-bar-fill" style="left:15%; width:65%; background:linear-gradient(90deg,rgba(144,184,136,0.3),rgba(144,184,136,0.7));"></div>
+            </div>
+            <span class="focus-row-high">91</span>
+          </div>
+          <div class="focus-row">
+            <span class="focus-row-label">Tue</span>
+            <span class="focus-row-low">38</span>
+            <div class="focus-bar-track">
+              <div class="focus-bar-fill" style="left:8%; width:55%; background:linear-gradient(90deg,rgba(144,184,136,0.3),rgba(144,184,136,0.65));"></div>
+            </div>
+            <span class="focus-row-high">80</span>
+          </div>
+          <div class="focus-row">
+            <span class="focus-row-label">Wed</span>
+            <span class="focus-row-low">44</span>
+            <div class="focus-bar-track">
+              <div class="focus-bar-fill" style="left:12%; width:58%; background:linear-gradient(90deg,rgba(144,184,136,0.3),rgba(144,184,136,0.65));"></div>
+            </div>
+            <span class="focus-row-high">85</span>
+          </div>
+          <div class="focus-row">
+            <span class="focus-row-label">Thu</span>
+            <span class="focus-row-low">55</span>
+            <div class="focus-bar-track">
+              <div class="focus-bar-fill" style="left:18%; width:42%; background:linear-gradient(90deg,rgba(144,184,136,0.3),rgba(144,184,136,0.6));"></div>
+            </div>
+            <span class="focus-row-high">78</span>
+          </div>
+          <div class="focus-row">
+            <span class="focus-row-label">Fri</span>
+            <span class="focus-row-low">30</span>
+            <div class="focus-bar-track">
+              <div class="focus-bar-fill" style="left:5%; width:70%; background:linear-gradient(90deg,rgba(144,184,136,0.3),rgba(144,184,136,0.65));"></div>
+            </div>
+            <span class="focus-row-high">88</span>
+          </div>
+        </div>
+        <p class="insight" style="margin-top:16px" id="cardFocusInsight">Today's window is narrower than your weekly average. Best hours were 9–11am.</p>
+      </div>
+
+      <!-- ⑤ SLEEP -->
+      <div class="glass-card" style="cursor: pointer;" onclick="openDetailView('sleep')">
+        <div class="chip">
+          <i class="ph-fill ph-moon"></i>
+          Sleep · last night
+        </div>
+        <p class="big-num" id="cardSleepVal" style="color:#E4E0F0; letter-spacing:-1px">6h 20m</p>
+        <p class="sub-label" id="cardSleepSub">target 7h 30m · deficit 1h 10m</p>
+        <div class="sleep-bar-wrap" style="padding-top:24px;">
+          <div class="sleep-track">
+            <div class="sleep-fill" id="cardSleepBar" style="width:84%; background: linear-gradient(90deg, #A898C0, #C8C0D8);"></div>
+            <div class="sleep-target-line" style="left:100%;">
+              <div class="sleep-target-label">target</div>
+            </div>
+          </div>
+          <div class="sleep-meta">
+            <span>0h</span><span>3h</span><span>6h</span><span>7h 30m</span>
+          </div>
+        </div>
+        <div class="sleep-week">
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" style="height:88%; background:rgba(168,152,192,0.4);"></div></div>
+            <div class="sleep-day-label">Sat</div>
+          </div>
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" style="height:95%; background:rgba(168,152,192,0.5);"></div></div>
+            <div class="sleep-day-label">Sun</div>
+          </div>
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" style="height:72%; background:rgba(168,152,192,0.35);"></div></div>
+            <div class="sleep-day-label">Mon</div>
+          </div>
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" style="height:80%; background:rgba(168,152,192,0.42);"></div></div>
+            <div class="sleep-day-label">Tue</div>
+          </div>
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" style="height:60%; background:rgba(168,152,192,0.32);"></div></div>
+            <div class="sleep-day-label">Wed</div>
+          </div>
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" style="height:65%; background:rgba(168,152,192,0.35);"></div></div>
+            <div class="sleep-day-label">Thu</div>
+          </div>
+          <div class="sleep-day-wrap">
+            <div class="sleep-day-bar-wrap"><div class="sleep-day-bar" id="cardSleepBarToday" style="height:84%; background:rgba(168,152,192,0.55); border:1px solid rgba(200,192,216,0.4); border-bottom:none;"></div></div>
+            <div class="sleep-day-label" style="color:var(--text-primary)">Fri</div>
+          </div>
+        </div>
+        <p class="insight" style="margin-top:14px" id="cardSleepInsight">Third short night this week. The deficit is adding up — body's compensating by the afternoon.</p>
+      </div>
     </div>
 
   </div>
+
+
 
   <!-- DETAIL VIEW OVERLAY -->
   <div id="detailView">
@@ -717,6 +1372,111 @@
   </div>
 
 <script>
+
+
+// ─── WEBSOCKET CONFIG ───────────────────────────────
+let MODE = "demo";   // "demo" or "live"
+const WS_URL = "ws://192.168.4.1:80/";
+let liveWs = null;
+
+function toggleMode() {
+  MODE = MODE === "demo" ? "live" : "demo";
+  updateToggleUI();
+  MODE === "live" ? startLive() : stopLive();
+}
+
+function updateToggleUI() {
+  const track = document.getElementById('toggleTrack');
+  const labelDemo = document.getElementById('labelDemo');
+  const labelLive = document.getElementById('labelLive');
+  const demoSelects = document.getElementById('demoSelects');
+
+  if (MODE === 'live') {
+    track.classList.add('live');
+    labelDemo.classList.remove('active');
+    labelLive.classList.add('active');
+    demoSelects.style.opacity = '0.3';
+    demoSelects.style.pointerEvents = 'none';
+  } else {
+    track.classList.remove('live');
+    labelDemo.classList.add('active');
+    labelLive.classList.remove('active');
+    demoSelects.style.opacity = '1';
+    demoSelects.style.pointerEvents = 'auto';
+    hideConnStatus();
+  }
+}
+
+function showConnStatus(msg, type) {
+  const el = document.getElementById('connStatus');
+  el.textContent = msg;
+  el.className = 'connection-status ' + type;
+  el.style.display = 'block';
+}
+
+function hideConnStatus() {
+  document.getElementById('connStatus').style.display = 'none';
+}
+
+function startLive() {
+  if (liveWs) { liveWs.close(); liveWs = null; }
+  showConnStatus('Connecting to ESP32…', '');
+
+  liveWs = new WebSocket(WS_URL);
+
+  liveWs.onopen = () => {
+    showConnStatus('Connected to sensor ✓', 'connected');
+    setTimeout(() => hideConnStatus(), 3000);
+  };
+
+  liveWs.onmessage = (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      applyLiveData(data);
+    } catch (err) {
+      showConnStatus('Parse error: ' + err.message, 'error');
+    }
+  };
+
+  liveWs.onerror = () => {
+    showConnStatus('WebSocket error — check ESP32', 'error');
+  };
+
+  liveWs.onclose = () => {
+    if (MODE === 'live') {
+      showConnStatus('Connection lost. Reconnecting in 3s…', 'error');
+      setTimeout(startLive, 3000);
+    }
+  };
+}
+
+function stopLive() {
+  if (liveWs) { liveWs.close(); liveWs = null; }
+  hideConnStatus();
+  manualUpdate(); // Restore demo state
+}
+
+// Map live sensor JSON → existing stateData format & update UI
+function applyLiveData(data) {
+  const state = data.wellness_state || 'Calm & Recovered';
+
+  // Temporarily override stateData for the detected state
+  stateData[state] = {
+    bpm: data.bpm || 0,
+    spo2: data.spo2 || 0,
+    rmssd: data.rmssd || 0,
+    sdnn: data.sdnn || 0,
+    stress_index: data.stress_index || 0,
+    recovery_score: data.recovery_score || 0,
+    sleepDur: stateData[state]?.sleepDur || '—',
+    sleepCopy: stateData[state]?.sleepCopy || '—'
+  };
+
+  // Set the dropdown to match the live state
+  document.getElementById('stateSelect').value = state;
+  manualUpdate();
+}
+
 // ─── THEMES (Ambient, Subdued Gradients) ────────────
 const themes = {
   "Calm & Recovered": {
@@ -794,16 +1554,16 @@ const stateData = {
 
 const homeMetricConfig = {
   morning: {
-    key: "readiness", label: "READINESS",
+    key: "readiness", label: "READINESS", icon: "ph-plant",
     calc: (d) => Math.round(((d.rmssd/100)*40) + (((10-d.stress_index)/10)*40) + (((d.spo2-90)/10)*20)),
     getCopy: (val) => {
       if(val>=75) return { h: "You're primed", s: "Good capacity today. Your body recovered well."};
-      if(val>=50) return { h: "You'll be alright", s: "Moderate capacity. Steady effort is fine today."};
+      if(val>=50) return { h: "You'll be alright", s: "We've all had bad nights, so no need to worry about yours. Take a deep breath before heading out, and cut yourself some slack today."};
       return { h: "Take it slow", s: "Your body needs more rest than your mind thinks."};
     }
   },
   afternoon: {
-    key: "focus", label: "FOCUS",
+    key: "focus", label: "FOCUS", icon: "ph-target",
     calc: (d) => Math.round(Math.min((d.rmssd/d.sdnn)*50, 100)),
     getCopy: (val) => {
       if(val>=67) return { h: "Locked in", s: "Good conditions for deep, sustained work."};
@@ -812,7 +1572,7 @@ const homeMetricConfig = {
     }
   },
   evening: {
-    key: "tension", label: "TENSION",
+    key: "tension", label: "TENSION", icon: "ph-activity",
     calc: (d) => Math.round(Math.min((d.stress_index/10)*100, 100)),
     getCopy: (val) => {
       if(val>=67) return { h: "Wound up", s: "High tension carried forward. Wind down intentionally."};
@@ -821,7 +1581,7 @@ const homeMetricConfig = {
     }
   },
   night: {
-    key: "steadiness", label: "STEADINESS",
+    key: "steadiness", label: "STEADINESS", icon: "ph-waves",
     calc: (d) => Math.round(Math.min((d.rmssd/100)*100, 100)),
     getCopy: (val) => {
       if(val>=67) return { h: "Winding down", s: "Your nervous system is settling. Good conditions for sleep."};
@@ -844,10 +1604,29 @@ function handleScroll() {
   const homeContent = document.getElementById('homeContent');
   homeContent.style.opacity = 1 - (progress * 1.5); 
 
-  // 2. Scale & fade orb container (stays in background)
+  // 2. Scale & morph orb container into a background liquid glow
+  // By stretching horizontally more than vertically, it mimics an irregular liquid pool 
+  // rather than just a scaled-up circle.
   const orbContainer = document.getElementById('orbContainer');
-  orbContainer.style.opacity = 1 - (progress * 0.6); 
-  orbContainer.style.transform = `scale(${1 - (progress * 0.25)}) translateY(${scrollY * 0.2}px)`;
+  orbContainer.style.opacity = 1 - (progress * 0.85); // Toned down to be less distracting
+  orbContainer.style.filter = `blur(${progress * 60}px)`;
+  orbContainer.style.transform = `scaleX(${1 + (progress * 3)}) scaleY(${1 + (progress * 1.5)}) translateY(${scrollY * 0.15}px)`;
+
+  // 3. Remove the bottom glow entirely when scrolled
+  const bgLayer = document.getElementById('bgLayer');
+  if (bgLayer) {
+    bgLayer.style.opacity = 1 - progress;
+  }
+
+  // 4. Toggle Sticky Top Bar
+  const stickyTopBar = document.getElementById('stickyTopBar');
+  if (stickyTopBar) {
+    if (progress > 0.15) {
+      stickyTopBar.classList.add('visible');
+    } else {
+      stickyTopBar.classList.remove('visible');
+    }
+  }
 }
 
 // ─── UI UPDATE ──────────────────────────────────────
@@ -880,59 +1659,61 @@ function manualUpdate() {
   document.getElementById('homeLabel').textContent = tConfig.label;
   document.getElementById('homeCopy').textContent = copyObj.h;
   document.getElementById('homeSubcopy').textContent = copyObj.s;
+  
+  const arcLength = 208.6;
+  const homeDashOffset = arcLength - (arcLength * (Math.min(100, Math.max(0, mainVal)) / 100));
+  document.getElementById('homeArcFill').style.strokeDashoffset = homeDashOffset;
+  document.getElementById('homeIcon').className = 'ph ' + (tConfig.icon || 'ph-plant');
 
-  // Detail Cards
-  document.getElementById('contextCardTitle').textContent = "Symptom Radar";
-  document.getElementById('contextCardHeadline').textContent = stateSel === "Calm & Recovered" ? "Looking good" : "Minor signs";
-  document.getElementById('contextCardBody').textContent = copyObj.s + " " + (rawData.insight || "Pay attention to your body's signals today.");
+  // 1. Readiness (Recovery Score maps to readiness)
+  const readiness = rawData.recovery_score || 0;
+  document.getElementById('cardReadinessVal').textContent = readiness;
+  document.getElementById('cardReadinessDot').style.left = readiness + '%';
+  let rColor = "#D8ECD4";
+  if(readiness < 40) rColor = "#D4A078";
+  else if(readiness < 70) rColor = "#F4DEC4";
+  document.getElementById('cardReadinessVal').style.color = rColor;
+  
+  // 2. Steadiness (RMSSD maps to steadiness)
+  const steadiness = rawData.rmssd || 0;
+  document.getElementById('cardSteadinessValNow').textContent = steadiness;
+  document.getElementById('cardSteadinessBarNow').style.height = Math.min(100, Math.max(10, steadiness)) + '%';
 
-  const svgs = {
-    hr: `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(255,255,255,0.2));"><path d="M0 20 L20 20 L24 10 L28 30 L32 5 L36 35 L40 20 L100 20" /></svg>`,
-    energy: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 40 L0 30 C 20 30, 30 10, 50 20 C 70 30, 80 15, 100 10 L100 40 Z" fill="url(#areaGrad)" /><path d="M0 30 C 20 30, 30 10, 50 20 C 70 30, 80 15, 100 10" fill="none" stroke="currentColor" stroke-width="1.5" filter="drop-shadow(0 0 2px rgba(255,255,255,0.4))"/><circle cx="100" cy="10" r="2.5" fill="currentColor" filter="drop-shadow(0 0 4px rgba(255,255,255,0.8))"/></svg>`,
-    steadiness: `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="stroke: currentColor; stroke-width: 2; stroke-linecap: round; opacity: 0.8;"><line x1="10" y1="12" x2="10" y2="28" /><line x1="22" y1="8" x2="22" y2="32" /><line x1="34" y1="16" x2="34" y2="24" /><line x1="46" y1="12" x2="46" y2="28" /><line x1="58" y1="4" x2="58" y2="36" /><line x1="70" y1="10" x2="70" y2="30" /><line x1="82" y1="18" x2="82" y2="22" /><line x1="94" y1="14" x2="94" y2="26" /></svg>`,
-    stress: `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="stroke: currentColor; stroke-width: 1.5; fill: none; stroke-dasharray: 4 6; stroke-linecap: round;"><path d="M0 20 Q 25 5, 50 20 T 100 20" /></svg>`
-  };
+  // 3. Tension + Energy
+  const tension = Math.round(Math.min((rawData.stress_index / 10) * 100, 100));
+  document.getElementById('cardTensionVal').textContent = tension;
+  const dashOffset = 188.5 - (188.5 * (tension / 100));
+  document.getElementById('cardTensionArc').style.strokeDashoffset = dashOffset;
+  let tLabel = "low";
+  if(tension > 60) tLabel = "high";
+  else if(tension > 30) tLabel = "med";
+  document.getElementById('cardTensionLabel').textContent = tLabel;
+  
+  const energy = rawData.recovery_score || 0;
+  document.getElementById('cardEnergyVal').textContent = energy;
+  document.getElementById('cardEnergyBar').style.width = energy + '%';
+  
+  // 4. Focus
+  const focusVal = Math.round(Math.min(((rawData.rmssd || 1) / (rawData.sdnn || 1)) * 50, 100));
+  document.getElementById('cardFocusValNow').textContent = focusVal;
+  document.getElementById('cardFocusBarNow').style.width = focusVal + '%';
 
-  document.getElementById('statsGrid').innerHTML = `
-    <div class="metric-card" onclick="openDetailView('hr')">
-      <div class="metric-info">
-        <div class="metric-label">Heart Rate</div>
-        <div class="metric-val">${rawData.bpm} <span class="metric-unit">bpm</span></div>
-      </div>
-      <div class="metric-chart">${svgs.hr}</div>
-      <div class="metric-chevron">&#x276F;</div>
-    </div>
-    <div class="metric-card" onclick="openDetailView('energy')">
-      <div class="metric-info">
-        <div class="metric-label">Energy</div>
-        <div class="metric-val">${rawData.recovery_score} <span class="metric-unit">%</span></div>
-      </div>
-      <div class="metric-chart">${svgs.energy}</div>
-      <div class="metric-chevron">&#x276F;</div>
-    </div>
-    <div class="metric-card" onclick="openDetailView('steadiness')">
-      <div class="metric-info">
-        <div class="metric-label">Steadiness</div>
-        <div class="metric-val">${rawData.rmssd} <span class="metric-unit">ms</span></div>
-      </div>
-      <div class="metric-chart">${svgs.steadiness}</div>
-      <div class="metric-chevron">&#x276F;</div>
-    </div>
-    <div class="metric-card" onclick="openDetailView('stress')">
-      <div class="metric-info">
-        <div class="metric-label">Stress Idx</div>
-        <div class="metric-val">${rawData.stress_index}</div>
-      </div>
-      <div class="metric-chart">${svgs.stress}</div>
-      <div class="metric-chevron">&#x276F;</div>
-    </div>
-  `;
-
-  document.getElementById('sleepTitle').textContent = rawData.sleepDur;
-  document.getElementById('sleepBody').textContent = rawData.sleepCopy;
+  // 5. Sleep
+  document.getElementById('cardSleepVal').textContent = rawData.sleepDur;
+  document.getElementById('cardSleepInsight').textContent = rawData.sleepCopy;
+  
+  // Estimate sleep percentage for bars
+  let hrs = parseInt(rawData.sleepDur) || 0;
+  let percent = Math.min(100, (hrs / 7.5) * 100);
+  document.getElementById('cardSleepBarToday').style.height = percent + '%';
+  document.getElementById('cardSleepBar').style.width = percent + '%';
   
   // Update target BPM for blob breathing
   window.targetBpm = rawData.bpm;
+
+  // Update Sticky Top Bar
+  document.getElementById('stbBpm').textContent = rawData.bpm || '--';
+  document.getElementById('stbSpo2').textContent = rawData.spo2 || '--';
 }
 
 // ─── DETAIL VIEW LOGIC ──────────────────────────────
@@ -1206,6 +1987,14 @@ function initThreeBlob() {
   renderer.setPixelRatio(window.devicePixelRatio);
   container.appendChild(renderer.domElement);
 
+  const tinyContainer = document.getElementById('tinyOrbContainer');
+  const tinyRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  if (tinyContainer) {
+    tinyRenderer.setSize(20, 20);
+    tinyRenderer.setPixelRatio(window.devicePixelRatio);
+    tinyContainer.appendChild(tinyRenderer.domElement);
+  }
+
   const geometry = new THREE.IcosahedronGeometry(2, 60); // Increased detail for smoother lighting
   const material = new THREE.ShaderMaterial({
     vertexShader,
@@ -1255,6 +2044,7 @@ function initThreeBlob() {
     mesh.scale.set(scale, scale, scale);
 
     renderer.render(scene, camera);
+    if (tinyContainer) tinyRenderer.render(scene, camera);
   }
   
   animate();
@@ -1273,6 +2063,9 @@ document.addEventListener("DOMContentLoaded", () => {
   manualUpdate();
   
   window.addEventListener('scroll', handleScroll, { passive: true });
+  
+  // Show onboarding on every refresh
+  showOnboarding();
 });
 </script>
 </body>
