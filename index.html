@@ -9,6 +9,7 @@
 <!-- Phosphor Icons -->
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
+
   /* ─── RESET & FONTS ─── */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   
@@ -1007,9 +1008,368 @@
     margin-top: 2px;
   }
 
+
+
+  /* ─── ONBOARDING OVERLAY ─── */
+        #onboarding {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2000;
+            background: rgba(8, 8, 16, 0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 40px 20px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        #onboarding.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .ob-card {
+            width: 100%;
+            max-width: 360px;
+            margin: auto;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-highlight);
+            border-radius: 28px;
+            padding: 36px 28px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #onboarding.visible .ob-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .ob-title {
+            font-family: var(--font-title);
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .ob-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .ob-field {
+            margin-bottom: 16px;
+        }
+
+        .ob-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .ob-input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 18px;
+            font-family: var(--font-body);
+            outline: none;
+            transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+            -webkit-appearance: none;
+        }
+
+        .ob-input:focus {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .ob-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .ob-bmi {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            min-height: 20px;
+        }
+
+        .ob-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 100px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            font-family: var(--font-body);
+            backdrop-filter: blur(10px);
+        }
+
+        .ob-btn:active {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(0.97);
+        }
+
+        .ob-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .ob-btn:disabled:active {
+            transform: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ─── PROFILE BUTTON ─── */
+        .profile-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 50;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .profile-btn:active {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(0.93);
+        }
+
+        /* ─── DEV CONTROLS FAB & PANEL ─── */
+        .dev-fab {
+            position: fixed;
+            bottom: 28px;
+            right: 20px;
+            z-index: 3000;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(74, 166, 255, 0.2);
+            border: 1px solid rgba(74, 166, 255, 0.35);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 24px rgba(74, 166, 255, 0.2);
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .dev-fab:hover {
+            background: rgba(74, 166, 255, 0.3);
+            box-shadow: 0 6px 32px rgba(74, 166, 255, 0.3);
+        }
+        .dev-fab:active {
+            transform: scale(0.92);
+        }
+        .dev-fab.open {
+            background: rgba(255, 80, 80, 0.2);
+            border-color: rgba(255, 80, 80, 0.35);
+            box-shadow: 0 4px 24px rgba(255, 80, 80, 0.2);
+        }
+
+        .dev-panel {
+            position: fixed;
+            bottom: 92px;
+            right: 20px;
+            z-index: 2999;
+            width: 300px;
+            background: rgba(15, 18, 22, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transform: translateY(20px) scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+        .dev-panel.open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dev-panel-title {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(74, 166, 255, 0.8);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dev-panel-title::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(74, 166, 255, 0.8);
+            animation: dev-pulse 2s ease-in-out infinite;
+        }
+        @keyframes dev-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .dev-slider-group {
+            margin-bottom: 20px;
+        }
+        .dev-slider-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .dev-slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dev-slider-label {
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dev-slider-label i {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .dev-slider-value {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.06);
+            padding: 3px 10px;
+            border-radius: 8px;
+            min-width: 48px;
+            text-align: center;
+        }
+
+        .dev-slider-track {
+            position: relative;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .dev-slider-track input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            outline: none;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .dev-slider-track input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .dev-slider-track input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.15);
+        }
+        .dev-slider-track input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.05);
+        }
+
+        .dev-slider-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 3px;
+            pointer-events: none;
+            z-index: 1;
+            transition: width 0.05s linear;
+        }
+
+        .dev-slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .dev-slider-group.time .dev-slider-fill { background: linear-gradient(90deg, rgba(168, 152, 192, 0.6), rgba(244, 222, 196, 0.6)); }
+        .dev-slider-group.bpm .dev-slider-fill { background: linear-gradient(90deg, rgba(144, 184, 136, 0.6), rgba(255, 77, 77, 0.6)); }
+        .dev-slider-group.spo2 .dev-slider-fill { background: linear-gradient(90deg, rgba(255, 77, 77, 0.6), rgba(77, 166, 255, 0.6)); }
 </style>
 </head>
 <body>
+
   <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
@@ -1080,31 +1440,7 @@
     </div>
   </div>
 
-  <!-- DEVELOPER CONTROLS -->
-  <div class="dev-controls">
-    <div class="dev-select-group" id="demoSelects">
-      <select id="stateSelect" onchange="manualUpdate()">
-        <option value="Calm & Recovered">Calm & Recovered</option>
-        <option value="Mildly Stressed">Mildly Stressed</option>
-        <option value="Fatigued">Fatigued</option>
-        <option value="Under Load">Under Load</option>
-      </select>
-      <select id="timeSelect" onchange="manualUpdate()">
-        <option value="morning">Morning (Readiness)</option>
-        <option value="afternoon">Afternoon (Focus)</option>
-        <option value="evening">Evening (Tension)</option>
-        <option value="night">Night (Steadiness)</option>
-      </select>
-    </div>
-    <div class="mode-toggle">
-      <span class="label active" id="labelDemo">Demo</span>
-      <div class="toggle-track" id="toggleTrack" onclick="toggleMode()">
-        <div class="toggle-thumb"></div>
-      </div>
-      <span class="label" id="labelLive">Live</span>
-    </div>
-  </div>
-  <div class="connection-status" id="connStatus"></div>
+<div class="connection-status" id="connStatus"></div>
 
   <!-- SCROLLING DETAIL CONTENT -->
   <div class="scroll-wrapper" id="scrollWrapper">
@@ -1371,478 +1707,1316 @@
     </div>
   </div>
 
-<script>
+  <!-- ONBOARDING OVERLAY -->
+    <div id="onboarding">
+        <div class="ob-card">
+            <div class="ob-title">Welcome to Soma</div>
+            <div class="ob-sub">Tell us about yourself so we can personalise your insights.</div>
+            <div class="ob-field">
+                <div class="ob-label">Age</div>
+                <input class="ob-input" id="obAge" type="number" inputmode="numeric" pattern="[0-9]*"
+                    placeholder="e.g. 24" min="10" max="100">
+            </div>
+            <div class="ob-field">
+                <div class="ob-label">Height (cm)</div>
+                <input class="ob-input" id="obHeight" type="number" inputmode="numeric" pattern="[0-9]*"
+                    placeholder="e.g. 175" min="100" max="250">
+            </div>
+            <div class="ob-field">
+                <div class="ob-label">Weight (kg)</div>
+                <input class="ob-input" id="obWeight" type="number" inputmode="numeric" pattern="[0-9]*"
+                    placeholder="e.g. 70" min="20" max="300">
+            </div>
+            <div class="ob-bmi" id="obBmi"></div>
+            <button class="ob-btn" id="obSubmit" disabled onclick="submitOnboarding()">Continue</button>
+        </div>
+    </div>
 
+    <!-- PROFILE BUTTON -->
+    <div class="profile-btn" id="profileBtn" onclick="showOnboarding(true)" style="display:none;"><i class="ph ph-ruler"></i></div>
 
-// ─── WEBSOCKET CONFIG ───────────────────────────────
-let MODE = "demo";   // "demo" or "live"
-const WS_URL = "ws://192.168.4.1:80/";
-let liveWs = null;
+    <!-- DEV CONTROLS FAB + PANEL -->
+    <div class="dev-fab" id="devFab" onclick="toggleDevPanel()">
+      <i class="ph ph-sliders-horizontal" id="devFabIcon"></i>
+    </div>
 
-function toggleMode() {
-  MODE = MODE === "demo" ? "live" : "demo";
-  updateToggleUI();
-  MODE === "live" ? startLive() : stopLive();
-}
+    <div class="dev-panel" id="devPanel">
+      <div class="dev-panel-title">Dev Controls</div>
 
-function updateToggleUI() {
-  const track = document.getElementById('toggleTrack');
-  const labelDemo = document.getElementById('labelDemo');
-  const labelLive = document.getElementById('labelLive');
-  const demoSelects = document.getElementById('demoSelects');
+      <!-- Time of Day Slider -->
+      <div class="dev-slider-group time">
+        <div class="dev-slider-header">
+          <div class="dev-slider-label"><i class="ph-fill ph-clock"></i> Time of Day</div>
+          <div class="dev-slider-value" id="devTimeValue">Afternoon</div>
+        </div>
+        <div class="dev-slider-track">
+          <div class="dev-slider-fill" id="devTimeFill" style="width:50%"></div>
+          <input type="range" id="devTimeSlider" min="0" max="3" step="1" value="1">
+        </div>
+        <div class="dev-slider-ticks">
+          <span>Morning</span><span>Afternoon</span><span>Evening</span><span>Night</span>
+        </div>
+      </div>
 
-  if (MODE === 'live') {
-    track.classList.add('live');
-    labelDemo.classList.remove('active');
-    labelLive.classList.add('active');
-    demoSelects.style.opacity = '0.3';
-    demoSelects.style.pointerEvents = 'none';
-  } else {
-    track.classList.remove('live');
-    labelDemo.classList.add('active');
-    labelLive.classList.remove('active');
-    demoSelects.style.opacity = '1';
-    demoSelects.style.pointerEvents = 'auto';
-    hideConnStatus();
-  }
-}
+      <!-- BPM Slider -->
+      <div class="dev-slider-group bpm">
+        <div class="dev-slider-header">
+          <div class="dev-slider-label"><i class="ph-fill ph-heartbeat"></i> Heart Rate</div>
+          <div class="dev-slider-value" id="devBpmValue">62 bpm</div>
+        </div>
+        <div class="dev-slider-track">
+          <div class="dev-slider-fill" id="devBpmFill" style="width:26.7%"></div>
+          <input type="range" id="devBpmSlider" min="40" max="150" step="1" value="62">
+        </div>
+        <div class="dev-slider-ticks">
+          <span>40</span><span>70</span><span>100</span><span>130</span><span>150</span>
+        </div>
+      </div>
 
-function showConnStatus(msg, type) {
-  const el = document.getElementById('connStatus');
-  el.textContent = msg;
-  el.className = 'connection-status ' + type;
-  el.style.display = 'block';
-}
+      <!-- SpO2 Slider -->
+      <div class="dev-slider-group spo2">
+        <div class="dev-slider-header">
+          <div class="dev-slider-label"><i class="ph-fill ph-drop"></i> SpO₂</div>
+          <div class="dev-slider-value" id="devSpo2Value">98%</div>
+        </div>
+        <div class="dev-slider-track">
+          <div class="dev-slider-fill" id="devSpo2Fill" style="width:80%"></div>
+          <input type="range" id="devSpo2Slider" min="85" max="100" step="1" value="98">
+        </div>
+        <div class="dev-slider-ticks">
+          <span>85%</span><span>90%</span><span>95%</span><span>100%</span>
+        </div>
+      </div>
+    </div>
 
-function hideConnStatus() {
-  document.getElementById('connStatus').style.display = 'none';
-}
+  <script>
+        // ═══════════════════════════════════════════════════
+        // LAYER 1: SomaDB — IndexedDB Persistence
+        // ═══════════════════════════════════════════════════
+        const SomaDB = {
+            db: null,
+            DB_NAME: 'SomaMockDB',
+            DB_VERSION: 1,
+            _writeThrottleTs: 0,
 
-function startLive() {
-  if (liveWs) { liveWs.close(); liveWs = null; }
-  showConnStatus('Connecting to ESP32…', '');
+            init() {
+                return new Promise((resolve, reject) => {
+                    const req = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+                    req.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('readings')) {
+                            const rs = db.createObjectStore('readings', { autoIncrement: true });
+                            rs.createIndex('timestamp', 'timestamp');
+                        }
+                        if (!db.objectStoreNames.contains('daily_summaries')) {
+                            const ds = db.createObjectStore('daily_summaries', { autoIncrement: true });
+                            ds.createIndex('date_metric', ['date', 'metric'], { unique: true });
+                        }
+                        if (!db.objectStoreNames.contains('user_profile')) {
+                            db.createObjectStore('user_profile', { keyPath: 'id' });
+                        }
+                        if (!db.objectStoreNames.contains('baselines')) {
+                            db.createObjectStore('baselines', { keyPath: 'metric' });
+                        }
+                    };
+                    req.onsuccess = (e) => { this.db = e.target.result; resolve(); };
+                    req.onerror = (e) => reject(e.target.error);
+                });
+            },
 
-  liveWs = new WebSocket(WS_URL);
+            _tx(store, mode) { return this.db.transaction(store, mode).objectStore(store); },
 
-  liveWs.onopen = () => {
-    showConnStatus('Connected to sensor ✓', 'connected');
-    setTimeout(() => hideConnStatus(), 3000);
-  };
+            storeReading(data) {
+                const now = Date.now();
+                if (now - this._writeThrottleTs < 10000) return; // throttle: 1 write / 10s
+                this._writeThrottleTs = now;
+                data.timestamp = now;
+                this._tx('readings', 'readwrite').add(data);
+            },
 
-  liveWs.onmessage = (e) => {
-    try {
-      const data = JSON.parse(e.data);
-      applyLiveData(data);
-    } catch (err) {
-      showConnStatus('Parse error: ' + err.message, 'error');
-    }
-  };
+            getReadings(startTs, endTs) {
+                return new Promise((resolve) => {
+                    const results = [];
+                    const range = IDBKeyRange.bound(startTs, endTs);
+                    const req = this._tx('readings', 'readonly').index('timestamp').openCursor(range);
+                    req.onsuccess = (e) => {
+                        const cursor = e.target.result;
+                        if (cursor) { results.push(cursor.value); cursor.continue(); }
+                        else resolve(results);
+                    };
+                    req.onerror = () => resolve([]);
+                });
+            },
 
-  liveWs.onerror = () => {
-    showConnStatus('WebSocket error — check ESP32', 'error');
-  };
+            getDailySummaries(metric, startDate, endDate) {
+                return new Promise((resolve) => {
+                    const results = [];
+                    const req = this._tx('daily_summaries', 'readonly').index('date_metric').openCursor();
+                    req.onsuccess = (e) => {
+                        const cursor = e.target.result;
+                        if (cursor) {
+                            const v = cursor.value;
+                            if (v.metric === metric && v.date >= startDate && v.date <= endDate) results.push(v);
+                            cursor.continue();
+                        } else resolve(results.sort((a, b) => a.date.localeCompare(b.date)));
+                    };
+                    req.onerror = () => resolve([]);
+                });
+            },
 
-  liveWs.onclose = () => {
-    if (MODE === 'live') {
-      showConnStatus('Connection lost. Reconnecting in 3s…', 'error');
-      setTimeout(startLive, 3000);
-    }
-  };
-}
+            saveProfile(profile) {
+                profile.id = 'default';
+                profile.bmi = +(profile.weight_kg / ((profile.height_cm / 100) ** 2)).toFixed(1);
+                profile.updated_at = Date.now();
+                if (!profile.created_at) profile.created_at = Date.now();
+                return new Promise((r) => { const req = this._tx('user_profile', 'readwrite').put(profile); req.onsuccess = () => r(profile); });
+            },
 
-function stopLive() {
-  if (liveWs) { liveWs.close(); liveWs = null; }
-  hideConnStatus();
-  manualUpdate(); // Restore demo state
-}
+            getProfile() {
+                return new Promise((r) => { const req = this._tx('user_profile', 'readonly').get('default'); req.onsuccess = (e) => r(e.target.result || null); });
+            },
 
-// Map live sensor JSON → existing stateData format & update UI
-function applyLiveData(data) {
-  const state = data.wellness_state || 'Calm & Recovered';
+            saveBaseline(data) {
+                return new Promise((r) => { this._tx('baselines', 'readwrite').put(data); r(); });
+            },
 
-  // Temporarily override stateData for the detected state
-  stateData[state] = {
-    bpm: data.bpm || 0,
-    spo2: data.spo2 || 0,
-    rmssd: data.rmssd || 0,
-    sdnn: data.sdnn || 0,
-    stress_index: data.stress_index || 0,
-    recovery_score: data.recovery_score || 0,
-    sleepDur: stateData[state]?.sleepDur || '—',
-    sleepCopy: stateData[state]?.sleepCopy || '—'
-  };
+            getBaselines() {
+                return new Promise((r) => {
+                    const results = {};
+                    const req = this._tx('baselines', 'readonly').openCursor();
+                    req.onsuccess = (e) => {
+                        const c = e.target.result;
+                        if (c) { results[c.value.metric] = c.value; c.continue(); }
+                        else r(results);
+                    };
+                });
+            },
 
-  // Set the dropdown to match the live state
-  document.getElementById('stateSelect').value = state;
-  manualUpdate();
-}
+            getReadingCount() {
+                return new Promise((r) => { const req = this._tx('readings', 'readonly').count(); req.onsuccess = (e) => r(e.target.result); });
+            },
 
-// ─── THEMES (Ambient, Subdued Gradients) ────────────
-const themes = {
-  "Calm & Recovered": {
-    bgBase: "#0a100a",
-    bgGrad1: "rgba(144,184,136,0.12)", 
-    bgGrad2: "rgba(184,212,176,0.06)",
-    blobColor: 0x90b888 // Pastel green
-  },
-  "Mildly Stressed": {
-    bgBase: "#100c08",
-    bgGrad1: "rgba(212,160,120,0.12)", 
-    bgGrad2: "rgba(232,196,160,0.06)", 
-    blobColor: 0xd4a078 // Warm orange
-  },
-  "Fatigued": {
-    bgBase: "#0c0a10",
-    bgGrad1: "rgba(168,152,192,0.12)", 
-    bgGrad2: "rgba(200,192,216,0.06)",
-    blobColor: 0xa898c0 // Soft purple
-  },
-  "Under Load": {
-    bgBase: "#100808",
-    bgGrad1: "rgba(200,128,112,0.15)", 
-    bgGrad2: "rgba(228,176,160,0.08)",
-    blobColor: 0xc88070 // Dim red
-  }
-};
+            rebuildDailySummary(dateStr) {
+                const dayStart = new Date(dateStr + 'T00:00:00').getTime();
+                const dayEnd = dayStart + 86400000;
+                return this.getReadings(dayStart, dayEnd).then(readings => {
+                    if (!readings.length) return;
+                    const metrics = ['bpm', 'spo2', 'rmssd', 'sdnn', 'stress_index', 'recovery_score'];
+                    const store = this._tx('daily_summaries', 'readwrite');
+                    metrics.forEach(m => {
+                        const vals = readings.map(r => r[m]).filter(v => v != null);
+                        if (!vals.length) return;
+                        const summary = {
+                            date: dateStr, metric: m,
+                            avg: +(vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1),
+                            min: Math.min(...vals), max: Math.max(...vals), count: vals.length
+                        };
+                        store.put(summary);
+                    });
+                });
+            },
 
-const motionProfiles = {
-  "Calm & Recovered": {
-    speed: 0.15,     // Very slow, lazy wobble
-    intensity: 0.15, // Extremely smooth surface
-    exp: 2.0,        // Smooth, wide calm breathing
-    amp: 0.08        // Subtle, relaxing expansion
-  },
-  "Mildly Stressed": {
-    speed: 0.6,      
-    intensity: 0.45, // More jagged surface
-    exp: 6.0,        // Sharper, rushed beat
-    amp: 0.09        // Shallower expansion
-  },
-  "Fatigued": {
-    speed: 0.2,      // Sluggish surface
-    intensity: 0.2,  // Very flat surface
-    exp: 3.0,        
-    amp: 0.05        // Weak, shallow beat
-  },
-  "Under Load": {
-    speed: 0.9,      // Fast, but not chaotic wobble
-    intensity: 0.55, // Distorted, but not overly spiky
-    exp: 8.0,        // Sharp beat, but less aggressive
-    amp: 0.12        // Noticeable pounding, but reigned in
-  }
-};
+            async seedDemoData(days = 240) {
+                const now = Date.now();
+                const store = this._tx('readings', 'readwrite');
+                const states = ['Calm & Recovered', 'Mildly Stressed', 'Fatigued', 'Under Load'];
 
-// ─── DATA MODELS ────────────────────────────────────
-const stateData = {
-  "Calm & Recovered": {
-    bpm: 62, spo2: 98, rmssd: 48, sdnn: 58, stress_index: 1.2, recovery_score: 82,
-    sleepDur: "7h 48m", sleepCopy: "You hit your target last night. Your body had time to repair."
-  },
-  "Mildly Stressed": {
-    bpm: 78, spo2: 97, rmssd: 32, sdnn: 40, stress_index: 3.5, recovery_score: 55,
-    sleepDur: "6h 15m", sleepCopy: "Just under your target. A consistent bedtime would help."
-  },
-  "Fatigued": {
-    bpm: 65, spo2: 97, rmssd: 38, sdnn: 35, stress_index: 1.5, recovery_score: 24,
-    sleepDur: "5h 30m", sleepCopy: "You slept less than your body needs. Recovery will be slower today."
-  },
-  "Under Load": {
-    bpm: 96, spo2: 96, rmssd: 18, sdnn: 22, stress_index: 7.2, recovery_score: 31,
-    sleepDur: "6h 42m", sleepCopy: "Just under your target. Autonomic system is working hard."
-  }
-};
+                // ── Life event periods (day offsets from start) ──
+                // Each event modifies baselines for that period
+                const lifeEvents = [
+                    { start: 0, end: 14, label: 'baseline_start', hrMod: 0, hrvMod: 0, siMod: 0, recMod: 0 },
+                    { start: 15, end: 28, label: 'started_running', hrMod: 5, hrvMod: -3, siMod: 0.3, recMod: -5 },
+                    { start: 29, end: 42, label: 'adapting_to_exercise', hrMod: 3, hrvMod: 2, siMod: 0.1, recMod: 0 },
+                    { start: 50, end: 57, label: 'mild_cold', hrMod: 8, hrvMod: -10, siMod: 1.5, recMod: -15 },
+                    { start: 58, end: 65, label: 'recovering_from_cold', hrMod: 4, hrvMod: -5, siMod: 0.5, recMod: -8 },
+                    { start: 75, end: 90, label: 'work_deadline', hrMod: 6, hrvMod: -8, siMod: 1.2, recMod: -10 },
+                    { start: 91, end: 100, label: 'vacation', hrMod: -5, hrvMod: 8, siMod: -0.8, recMod: 12 },
+                    { start: 110, end: 125, label: 'consistent_gym', hrMod: -2, hrvMod: 5, siMod: -0.3, recMod: 5 },
+                    { start: 140, end: 150, label: 'poor_sleep_week', hrMod: 7, hrvMod: -12, siMod: 1.0, recMod: -12 },
+                    { start: 160, end: 175, label: 'meditation_habit', hrMod: -3, hrvMod: 6, siMod: -0.5, recMod: 8 },
+                    { start: 190, end: 200, label: 'travel_jetlag', hrMod: 5, hrvMod: -6, siMod: 0.8, recMod: -7 },
+                    { start: 210, end: 225, label: 'peak_fitness', hrMod: -4, hrvMod: 8, siMod: -0.6, recMod: 10 },
+                ];
 
-const homeMetricConfig = {
-  morning: {
-    key: "readiness", label: "READINESS", icon: "ph-plant",
-    calc: (d) => Math.round(((d.rmssd/100)*40) + (((10-d.stress_index)/10)*40) + (((d.spo2-90)/10)*20)),
-    getCopy: (val) => {
-      if(val>=75) return { h: "You're primed", s: "Good capacity today. Your body recovered well."};
-      if(val>=50) return { h: "You'll be alright", s: "We've all had bad nights, so no need to worry about yours. Take a deep breath before heading out, and cut yourself some slack today."};
-      return { h: "Take it slow", s: "Your body needs more rest than your mind thinks."};
-    }
-  },
-  afternoon: {
-    key: "focus", label: "FOCUS", icon: "ph-target",
-    calc: (d) => Math.round(Math.min((d.rmssd/d.sdnn)*50, 100)),
-    getCopy: (val) => {
-      if(val>=67) return { h: "Locked in", s: "Good conditions for deep, sustained work."};
-      if(val>=34) return { h: "Wandering mind", s: "Moderate coherence. Short breaks will help."};
-      return { h: "Scattered state", s: "Avoid demanding cognitive tasks right now."};
-    }
-  },
-  evening: {
-    key: "tension", label: "TENSION", icon: "ph-activity",
-    calc: (d) => Math.round(Math.min((d.stress_index/10)*100, 100)),
-    getCopy: (val) => {
-      if(val>=67) return { h: "Wound up", s: "High tension carried forward. Wind down intentionally."};
-      if(val>=34) return { h: "Lingering load", s: "Some load still present. A walk would help clear it."};
-      return { h: "Letting go", s: "Minimal load. Your body handled today well."};
-    }
-  },
-  night: {
-    key: "steadiness", label: "STEADINESS", icon: "ph-waves",
-    calc: (d) => Math.round(Math.min((d.rmssd/100)*100, 100)),
-    getCopy: (val) => {
-      if(val>=67) return { h: "Winding down", s: "Your nervous system is settling. Good conditions for sleep."};
-      if(val>=34) return { h: "Still active", s: "Still some activation. Give it more time to come down."};
-      return { h: "Running hot", s: "Body still running hot. Avoid screens and stimulation."};
-    }
-  }
-};
+                function getEventMod(dayIdx) {
+                    const actualDay = days - dayIdx; // dayIdx counts from past
+                    for (const ev of lifeEvents) {
+                        if (actualDay >= ev.start && actualDay <= ev.end) return ev;
+                    }
+                    return { hrMod: 0, hrvMod: 0, siMod: 0, recMod: 0 };
+                }
 
-// ─── SCROLL MECHANICS ───────────────────────────────
-function handleScroll() {
-  const scrollY = window.scrollY;
-  const vh = window.innerHeight;
-  
-  let progress = scrollY / (vh * 0.7); 
-  if (progress > 1) progress = 1;
-  if (progress < 0) progress = 0;
+                // ── Baseline values for a healthy 27yo male ──
+                let bpm = 64, rmssd = 45, sdnn = 52, si = 1.8, rec = 72;
 
-  // 1. Fade out home text entirely
-  const homeContent = document.getElementById('homeContent');
-  homeContent.style.opacity = 1 - (progress * 1.5); 
+                for (let d = days; d >= 0; d--) {
+                    const dayDate = new Date(now - d * 86400000);
+                    const dow = dayDate.getDay(); // 0=Sun, 6=Sat
+                    const isWeekend = dow === 0 || dow === 6;
+                    const ev = getEventMod(d);
 
-  // 2. Scale & morph orb container into a background liquid glow
-  // By stretching horizontally more than vertically, it mimics an irregular liquid pool 
-  // rather than just a scaled-up circle.
-  const orbContainer = document.getElementById('orbContainer');
-  orbContainer.style.opacity = 1 - (progress * 0.85); // Toned down to be less distracting
-  orbContainer.style.filter = `blur(${progress * 60}px)`;
-  orbContainer.style.transform = `scaleX(${1 + (progress * 3)}) scaleY(${1 + (progress * 1.5)}) translateY(${scrollY * 0.15}px)`;
+                    // Gradual fitness improvement over 8 months (subtle)
+                    const fitnessGain = Math.min(((days - d) / days) * 4, 4); // up to -4 bpm, +4 HRV
 
-  // 3. Remove the bottom glow entirely when scrolled
-  const bgLayer = document.getElementById('bgLayer');
-  if (bgLayer) {
-    bgLayer.style.opacity = 1 - progress;
-  }
+                    for (let h = 0; h < 24; h += 0.167) { // ~every 10 min
+                        const ts = now - d * 86400000 + Math.floor(h * 3600000);
+                        const hr = Math.floor(h);
+                        const isNight = hr >= 23 || hr < 6;
+                        const isMorning = hr >= 6 && hr < 9;
+                        const isAfternoon = hr >= 12 && hr < 14;
+                        const isEvening = hr >= 18 && hr < 22;
+                        const isWorkHours = hr >= 9 && hr < 18 && !isWeekend;
 
-  // 4. Toggle Sticky Top Bar
-  const stickyTopBar = document.getElementById('stickyTopBar');
-  if (stickyTopBar) {
-    if (progress > 0.15) {
-      stickyTopBar.classList.add('visible');
-    } else {
-      stickyTopBar.classList.remove('visible');
-    }
-  }
-}
+                        // Circadian rhythm modifiers
+                        let circHr = 0, circHrv = 0, circSi = 0;
+                        if (isNight) { circHr = -8; circHrv = 12; circSi = -0.6; }
+                        else if (isMorning) { circHr = 2; circHrv = -2; circSi = 0.2; }
+                        else if (isAfternoon) { circHr = 4; circHrv = -4; circSi = 0.3; }
+                        else if (isEvening) { circHr = -2; circHrv = 4; circSi = -0.2; }
+                        else if (isWorkHours) { circHr = 3; circHrv = -3; circSi = 0.4; }
 
-// ─── UI UPDATE ──────────────────────────────────────
-function manualUpdate() {
-  const stateSel = document.getElementById('stateSelect').value;
-  const timeSel = document.getElementById('timeSelect').value;
-  
-  const rawData = stateData[stateSel];
-  const tConfig = homeMetricConfig[timeSel];
-  
-  // Theme & Motion updates
-  const theme = themes[stateSel];
-  const root = document.documentElement.style;
-  root.setProperty('--bg-base', theme.bgBase);
-  root.setProperty('--bg-gradient-1', theme.bgGrad1);
-  root.setProperty('--bg-gradient-2', theme.bgGrad2);
+                        // Weekend relaxation bonus
+                        const weekendMod = isWeekend ? { hr: -2, hrv: 3, si: -0.2 } : { hr: 0, hrv: 0, si: 0 };
 
-  window.targetProfile = motionProfiles[stateSel];
+                        // Random walk with all modifiers
+                        bpm = Math.max(46, Math.min(115,
+                            bpm + (Math.random() - 0.5) * 3
+                            + circHr * 0.05 + ev.hrMod * 0.02 + weekendMod.hr * 0.02 - fitnessGain * 0.005
+                        ));
+                        rmssd = Math.max(10, Math.min(85,
+                            rmssd + (Math.random() - 0.5) * 2.5
+                            + circHrv * 0.04 + ev.hrvMod * 0.02 + weekendMod.hrv * 0.02 + fitnessGain * 0.005
+                        ));
+                        sdnn = Math.max(15, Math.min(85,
+                            sdnn + (Math.random() - 0.5) * 2
+                        ));
+                        si = Math.max(0.3, Math.min(9,
+                            si + (Math.random() - 0.5) * 0.4
+                            + circSi * 0.03 + ev.siMod * 0.02 + weekendMod.si * 0.02
+                        ));
+                        rec = Math.max(12, Math.min(98,
+                            rec + (Math.random() - 0.5) * 2.5
+                            + (isNight ? 0.15 : -0.05) + ev.recMod * 0.02 + fitnessGain * 0.004
+                        ));
 
-  // Update WebGL Blob Color
-  if (window.blobUniforms && window.blobUniforms.u_color) {
-    window.blobUniforms.u_color.value.setHex(theme.blobColor);
-  }
+                        const spo2 = isNight
+                            ? 94 + Math.floor(Math.random() * 5) // slightly lower at night
+                            : 95 + Math.floor(Math.random() * 4);
 
-  // Home Screen
-  const mainVal = tConfig.calc(rawData);
-  const copyObj = tConfig.getCopy(mainVal);
+                        const stateIdx = si > 5 ? 3 : si > 3 ? 1 : rec < 30 ? 2 : 0;
 
-  document.getElementById('homeNumber').textContent = mainVal;
-  document.getElementById('homeLabel').textContent = tConfig.label;
-  document.getElementById('homeCopy').textContent = copyObj.h;
-  document.getElementById('homeSubcopy').textContent = copyObj.s;
-  
-  const arcLength = 208.6;
-  const homeDashOffset = arcLength - (arcLength * (Math.min(100, Math.max(0, mainVal)) / 100));
-  document.getElementById('homeArcFill').style.strokeDashoffset = homeDashOffset;
-  document.getElementById('homeIcon').className = 'ph ' + (tConfig.icon || 'ph-plant');
+                        store.add({
+                            timestamp: ts,
+                            bpm: Math.round(bpm),
+                            spo2,
+                            rmssd: +rmssd.toFixed(1),
+                            sdnn: +sdnn.toFixed(1),
+                            stress_index: +si.toFixed(1),
+                            recovery_score: Math.round(rec),
+                            wellness_state: states[stateIdx]
+                        });
+                    }
+                }
 
-  // 1. Readiness (Recovery Score maps to readiness)
-  const readiness = rawData.recovery_score || 0;
-  document.getElementById('cardReadinessVal').textContent = readiness;
-  document.getElementById('cardReadinessDot').style.left = readiness + '%';
-  let rColor = "#D8ECD4";
-  if(readiness < 40) rColor = "#D4A078";
-  else if(readiness < 70) rColor = "#F4DEC4";
-  document.getElementById('cardReadinessVal').style.color = rColor;
-  
-  // 2. Steadiness (RMSSD maps to steadiness)
-  const steadiness = rawData.rmssd || 0;
-  document.getElementById('cardSteadinessValNow').textContent = steadiness;
-  document.getElementById('cardSteadinessBarNow').style.height = Math.min(100, Math.max(10, steadiness)) + '%';
+                // Build daily summaries for all days
+                for (let d = days; d >= 0; d--) {
+                    const date = new Date(now - d * 86400000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    await this.rebuildDailySummary(dateStr);
+                }
+            }
+        };
 
-  // 3. Tension + Energy
-  const tension = Math.round(Math.min((rawData.stress_index / 10) * 100, 100));
-  document.getElementById('cardTensionVal').textContent = tension;
-  const dashOffset = 188.5 - (188.5 * (tension / 100));
-  document.getElementById('cardTensionArc').style.strokeDashoffset = dashOffset;
-  let tLabel = "low";
-  if(tension > 60) tLabel = "high";
-  else if(tension > 30) tLabel = "med";
-  document.getElementById('cardTensionLabel').textContent = tLabel;
-  
-  const energy = rawData.recovery_score || 0;
-  document.getElementById('cardEnergyVal').textContent = energy;
-  document.getElementById('cardEnergyBar').style.width = energy + '%';
-  
-  // 4. Focus
-  const focusVal = Math.round(Math.min(((rawData.rmssd || 1) / (rawData.sdnn || 1)) * 50, 100));
-  document.getElementById('cardFocusValNow').textContent = focusVal;
-  document.getElementById('cardFocusBarNow').style.width = focusVal + '%';
+        // ═══════════════════════════════════════════════════
+        // LAYER 2: SomaAnalytics — Personal Baselines
+        // ═══════════════════════════════════════════════════
+        const SomaAnalytics = {
+            // Age-adjusted HRV floors
+            hrvFloor(age) {
+                if (age < 26) return 40; if (age < 36) return 35; if (age < 46) return 28;
+                if (age < 56) return 22; if (age < 66) return 18; return 15;
+            },
+            hrvCeiling(age) {
+                if (age < 26) return 100; if (age < 36) return 80; if (age < 46) return 65;
+                if (age < 56) return 55; if (age < 66) return 45; return 40;
+            },
+            sleepNeed(age) {
+                if (age < 18) return 9; if (age < 26) return 8; if (age < 46) return 7.5;
+                if (age < 66) return 7.5; return 7;
+            },
+            hrRange(age) {
+                if (age < 26) return [55, 80]; if (age < 36) return [55, 82]; if (age < 46) return [58, 85];
+                if (age < 56) return [60, 88]; return [60, 92];
+            },
+            bmiModifier(bmi) {
+                if (bmi < 18.5) return { hr: -3, hrv: 5, rec: 5 };
+                if (bmi < 25) return { hr: 0, hrv: 0, rec: 0 };
+                if (bmi < 30) return { hr: 5, hrv: -8, rec: -5 };
+                return { hr: 10, hrv: -15, rec: -10 };
+            },
 
-  // 5. Sleep
-  document.getElementById('cardSleepVal').textContent = rawData.sleepDur;
-  document.getElementById('cardSleepInsight').textContent = rawData.sleepCopy;
-  
-  // Estimate sleep percentage for bars
-  let hrs = parseInt(rawData.sleepDur) || 0;
-  let percent = Math.min(100, (hrs / 7.5) * 100);
-  document.getElementById('cardSleepBarToday').style.height = percent + '%';
-  document.getElementById('cardSleepBar').style.width = percent + '%';
-  
-  // Update target BPM for blob breathing
-  window.targetBpm = rawData.bpm;
+            async computeBaselines(profile) {
+                const now = Date.now();
+                const thirtyDaysAgo = new Date(now - 30 * 86400000).toISOString().split('T')[0];
+                const today = new Date(now).toISOString().split('T')[0];
+                const bmiMod = this.bmiModifier(profile.bmi);
+                const metrics = ['bpm', 'rmssd', 'sdnn', 'stress_index', 'recovery_score', 'spo2'];
 
-  // Update Sticky Top Bar
-  document.getElementById('stbBpm').textContent = rawData.bpm || '--';
-  document.getElementById('stbSpo2').textContent = rawData.spo2 || '--';
-}
+                for (const m of metrics) {
+                    const summaries = await SomaDB.getDailySummaries(m, thirtyDaysAgo, today);
+                    if (!summaries.length) continue;
+                    const avg = summaries.reduce((a, s) => a + s.avg, 0) / summaries.length;
+                    let adjFloor, adjCeiling;
+                    if (m === 'bpm') {
+                        const [lo, hi] = this.hrRange(profile.age);
+                        adjFloor = lo + bmiMod.hr; adjCeiling = hi + bmiMod.hr;
+                    } else if (m === 'rmssd') {
+                        adjFloor = this.hrvFloor(profile.age) + bmiMod.hrv;
+                        adjCeiling = this.hrvCeiling(profile.age) + bmiMod.hrv;
+                    } else { adjFloor = null; adjCeiling = null; }
 
-// ─── DETAIL VIEW LOGIC ──────────────────────────────
-const detailMockData = {
-  hr: {
-    title: "Heart Rate", val: "62", unit: "bpm", themeColor: "#ff4d4d", icon: "❤️",
-    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="5" y="40" width="8" height="60" fill="var(--theme-color)" rx="2"/><rect x="21" y="20" width="8" height="80" fill="var(--theme-color)" rx="2"/><rect x="37" y="50" width="8" height="50" fill="var(--theme-color)" rx="2"/><rect x="53" y="10" width="8" height="90" fill="var(--theme-color)" rx="2"/><rect x="69" y="60" width="8" height="40" fill="var(--theme-color)" rx="2"/><rect x="85" y="30" width="8" height="70" fill="var(--theme-color)" rx="2"/></svg>`,
-    highlights: [
-      {
-        copy: "Your resting heart rate is slightly elevated today compared to your weekly average.",
-        label1: "Today", val1: "68", color1: "var(--theme-color)",
-        label2: "Average", val2: "61", color2: "var(--text-secondary)",
-        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 30 Q 25 30 50 15 T 100 20" fill="none" stroke="var(--text-secondary)" stroke-width="2" opacity="0.5"/><path d="M0 25 Q 25 35 50 10 T 100 5" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="100" cy="5" r="3" fill="var(--theme-color)"/></svg>`
-      }
-    ]
-  },
-  energy: {
-    title: "Energy & Recovery", val: "82", unit: "%", themeColor: "#4dff88", icon: "⚡",
-    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10 L100 100 Z" fill="var(--theme-color)" opacity="0.4"/><path d="M0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10" fill="none" stroke="var(--theme-color)" stroke-width="3"/></svg>`,
-    highlights: [
-      {
-        copy: "You've been recovering much better this month compared to last month.",
-        label1: "April", val1: "82%", color1: "var(--theme-color)",
-        label2: "March", val2: "71%", color2: "var(--text-secondary)",
-        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="10" width="100" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="26" width="70" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
-      },
-      {
-        copy: "You averaged an 85% recovery score over the last 7 days.",
-        label1: "Current", val1: "85%", color1: "var(--theme-color)",
-        label2: "Baseline", val2: "75%", color2: "var(--text-secondary)",
-        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><line x1="0" y1="20" x2="100" y2="20" stroke="var(--theme-color)" stroke-width="1.5"/><rect x="10" y="5" width="6" height="35" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="25" y="15" width="6" height="25" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="40" y="10" width="6" height="30" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="55" y="25" width="6" height="15" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="70" y="5" width="6" height="35" fill="rgba(255,255,255,0.2)" rx="2"/><rect x="85" y="20" width="6" height="20" fill="rgba(255,255,255,0.2)" rx="2"/></svg>`
-      }
-    ]
-  },
-  steadiness: {
-    title: "Steadiness (RMSSD)", val: "48", unit: "ms", themeColor: "#4da6ff", icon: "🌊",
-    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="5" y="40" width="8" height="60" fill="var(--theme-color)" rx="2"/><rect x="21" y="20" width="8" height="80" fill="var(--theme-color)" rx="2"/><rect x="37" y="50" width="8" height="50" fill="var(--theme-color)" rx="2"/><rect x="53" y="10" width="8" height="90" fill="var(--theme-color)" rx="2"/><rect x="69" y="60" width="8" height="40" fill="var(--theme-color)" rx="2"/><rect x="85" y="30" width="8" height="70" fill="var(--theme-color)" rx="2"/></svg>`,
-    highlights: [
-      {
-        copy: "Your nervous system resilience is trending upwards.",
-        label1: "Current", val1: "48", color1: "var(--theme-color)",
-        label2: "Previous", val2: "35", color2: "var(--text-secondary)",
-        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 35 L 50 30 L 100 5" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="100" cy="5" r="3" fill="var(--theme-color)"/></svg>`
-      }
-    ]
-  },
-  stress: {
-    title: "Stress Index", val: "1.2", unit: "", themeColor: "#ffb84d", icon: "〰️",
-    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 80 Q 25 60 50 80 T 100 80" fill="none" stroke="var(--theme-color)" stroke-width="3" stroke-dasharray="4 6"/></svg>`,
-    highlights: [
-      {
-        copy: "You are exhibiting minimal physical stress today.",
-        label1: "Today", val1: "1.2", color1: "var(--theme-color)",
-        label2: "Average", val2: "3.4", color2: "var(--text-secondary)",
-        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="10" width="30" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="26" width="60" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
-      }
-    ]
-  },
-  sleep: {
-    title: "Sleep & Recovery", val: "7", unit: "h 48m", themeColor: "#b366ff", icon: "🌙",
-    mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10 L100 100 Z" fill="var(--theme-color)" opacity="0.4"/><path d="M0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10" fill="none" stroke="var(--theme-color)" stroke-width="3"/></svg>`,
-    highlights: [
-      {
-        copy: "Your sleep efficiency is consistently higher on weekends.",
-        label1: "Weekend", val1: "92%", color1: "var(--theme-color)",
-        label2: "Weekday", val2: "81%", color2: "var(--text-secondary)",
-        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="10" width="100" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="26" width="80" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
-      }
-    ]
-  }
-};
+                    await SomaDB.saveBaseline({
+                        metric: m, value: +avg.toFixed(1), adjFloor, adjCeiling,
+                        updated_at: Date.now()
+                    });
+                }
+            },
 
-let currentDetailMetric = null;
+            async getTrend(metric, daysA, daysB) {
+                const now = Date.now();
+                const today = new Date(now).toISOString().split('T')[0];
+                const startA = new Date(now - daysA * 86400000).toISOString().split('T')[0];
+                const startB = new Date(now - daysB * 86400000).toISOString().split('T')[0];
+                const periodA = await SomaDB.getDailySummaries(metric, startA, today);
+                const periodB = await SomaDB.getDailySummaries(metric, startB, startA);
+                if (!periodA.length || !periodB.length) return null;
+                const avgA = periodA.reduce((a, s) => a + s.avg, 0) / periodA.length;
+                const avgB = periodB.reduce((a, s) => a + s.avg, 0) / periodB.length;
+                const diff = avgA - avgB;
+                const pct = avgB !== 0 ? +((diff / avgB) * 100).toFixed(1) : 0;
+                return { avgCurrent: +avgA.toFixed(1), avgPrevious: +avgB.toFixed(1), diff: +diff.toFixed(1), pct, direction: diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat' };
+            }
+        };
 
-function changeTimeTab(element, range) {
-  // Update active tab styling
-  document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-  element.classList.add('active');
+        // ═══════════════════════════════════════════════════
+        // LAYER 3: SomaInsights — Rule-Based Engine
+        // ═══════════════════════════════════════════════════
+        const SomaInsights = {
+            cached: [],
 
-  // Load new chart if available
-  if (currentDetailMetric && detailMockData[currentDetailMetric]) {
-     const data = detailMockData[currentDetailMetric];
-     let chartContent = data.mainChart; 
-     
-     // Generate a visually distinct mock chart for demo purposes
-     if (range === 'D') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="10" y="20" width="80" height="60" fill="var(--theme-color)" rx="4" opacity="0.8"/></svg>`;
-     if (range === 'W') chartContent = data.mainChart;
-     if (range === 'M') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10 L100 100 Z" fill="var(--theme-color)" opacity="0.4"/><path d="M0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10" fill="none" stroke="var(--theme-color)" stroke-width="3"/></svg>`;
-     if (range === '6M') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 80 Q 25 60 50 80 T 100 80" fill="none" stroke="var(--theme-color)" stroke-width="3" stroke-dasharray="4 6"/></svg>`;
-     if (range === 'Y') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="5" y="30" width="15" height="70" fill="var(--theme-color)" rx="2"/><rect x="25" y="40" width="15" height="60" fill="var(--theme-color)" rx="2"/><rect x="45" y="20" width="15" height="80" fill="var(--theme-color)" rx="2"/><rect x="65" y="50" width="15" height="50" fill="var(--theme-color)" rx="2"/><rect x="85" y="10" width="15" height="90" fill="var(--theme-color)" rx="2"/></svg>`;
-     
-     document.getElementById('dvMainChart').innerHTML = chartContent;
-  }
-}
+            async generate(latestData, baselines, profile) {
+                const insights = [];
+                if (!latestData || !profile) return insights;
 
-function openDetailView(key) {
-  const data = detailMockData[key];
-  if(!data) return;
+                const bmiMod = SomaAnalytics.bmiModifier(profile.bmi);
 
-  currentDetailMetric = key;
-  const dv = document.getElementById('detailView');
-  
-  // Reset tabs to W
-  document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.time-tab')[1].classList.add('active'); // "W" is 2nd
+                // Anomaly: HR above baseline
+                if (baselines.bpm && latestData.bpm > baselines.bpm.value * 1.15) {
+                    const diff = Math.round(latestData.bpm - baselines.bpm.value);
+                    insights.push({
+                        type: 'anomaly', metric: 'hr', severity: 'warning',
+                        title: 'Elevated heart rate',
+                        body: `Your heart rate is ${latestData.bpm} bpm — about ${diff} above your usual ${baselines.bpm.value}.`,
+                        advice: 'Could indicate stress, dehydration, or poor sleep.'
+                    });
+                }
 
-  // Set basic data
-  document.getElementById('dvTitle').textContent = data.title;
-  document.getElementById('dvMainVal').innerHTML = `${data.val} <span class="main-chart-unit">${data.unit}</span>`;
-  document.getElementById('dvMainChart').innerHTML = data.mainChart;
-  
-  // Set theme variable for charts
-  dv.style.setProperty('--theme-color', data.themeColor);
+                // Anomaly: Low HRV
+                if (baselines.rmssd && latestData.rmssd < baselines.rmssd.value * 0.7) {
+                    insights.push({
+                        type: 'anomaly', metric: 'rmssd', severity: 'warning',
+                        title: 'Low HRV today',
+                        body: `Your HRV is ${latestData.rmssd}ms — below your baseline of ${baselines.rmssd.value}ms.`,
+                        advice: 'Your nervous system may need extra recovery time.'
+                    });
+                }
 
-  // Generate highlights
-  let highlightsHtml = '';
-  data.highlights.forEach(hl => {
-    highlightsHtml += `
+                // Anomaly: Low SpO2
+                if (latestData.spo2 < 95) {
+                    insights.push({
+                        type: 'anomaly', metric: 'spo2', severity: 'critical',
+                        title: 'Low oxygen saturation',
+                        body: `Your SpO2 is at ${latestData.spo2}% — below typical levels.`,
+                        advice: 'If persistent, consider consulting a doctor.'
+                    });
+                }
+
+                // Profile-aware: HRV for age
+                if (baselines.rmssd) {
+                    const floor = SomaAnalytics.hrvFloor(profile.age) + bmiMod.hrv;
+                    if (baselines.rmssd.value > floor * 1.5) {
+                        insights.push({
+                            type: 'milestone', metric: 'rmssd', severity: 'info',
+                            title: 'Excellent HRV for your age',
+                            body: `Your baseline HRV of ${baselines.rmssd.value}ms is well above the expected range for age ${profile.age}.`,
+                            advice: 'Whatever you\'re doing, keep it up.'
+                        });
+                    }
+                }
+
+                // Trend: Recovery
+                const recTrend = await SomaAnalytics.getTrend('recovery_score', 7, 14);
+                if (recTrend && Math.abs(recTrend.pct) > 10) {
+                    insights.push({
+                        type: 'trend', metric: 'recovery', severity: 'info',
+                        title: recTrend.direction === 'up' ? 'Recovery improving' : 'Recovery declining',
+                        body: `Recovery is ${recTrend.direction === 'up' ? 'up' : 'down'} ${Math.abs(recTrend.pct)}% this week vs last (${recTrend.avgCurrent}% → ${recTrend.avgPrevious}%).`,
+                        advice: recTrend.direction === 'up' ? 'Great progress.' : 'Prioritise rest.'
+                    });
+                }
+
+                // Trend: HR
+                const hrTrend = await SomaAnalytics.getTrend('bpm', 7, 14);
+                if (hrTrend && Math.abs(hrTrend.pct) > 8) {
+                    insights.push({
+                        type: 'trend', metric: 'hr', severity: 'info',
+                        title: hrTrend.direction === 'up' ? 'Heart rate trending up' : 'Heart rate trending down',
+                        body: `Weekly avg ${hrTrend.avgCurrent} bpm vs ${hrTrend.avgPrevious} bpm last week (${hrTrend.pct > 0 ? '+' : ''}${hrTrend.pct}%).`,
+                        advice: hrTrend.direction === 'up' ? 'Watch for sustained elevation.' : 'Positive sign of fitness adaptation.'
+                    });
+                }
+
+                // Sleep need based on age
+                const sleepNeed = SomaAnalytics.sleepNeed(profile.age);
+                insights.push({
+                    type: 'info', metric: 'sleep', severity: 'info',
+                    title: 'Sleep target',
+                    body: `At age ${profile.age}, your body needs ${sleepNeed}+ hours of sleep for optimal recovery.`,
+                    advice: 'Consistent bedtime helps more than total duration.'
+                });
+
+                this.cached = insights;
+                return insights;
+            },
+
+            getTopInsight() {
+                const priority = { critical: 3, warning: 2, info: 1 };
+                return [...this.cached].sort((a, b) => (priority[b.severity] || 0) - (priority[a.severity] || 0))[0] || null;
+            },
+
+            getForMetric(key) {
+                const metricMap = { hr: 'hr', energy: 'recovery', steadiness: 'rmssd', stress: 'stress_index', sleep: 'sleep' };
+                const mapped = metricMap[key] || key;
+                return this.cached.filter(i => i.metric === mapped || i.metric === key);
+            }
+        };
+
+        // ═══════════════════════════════════════════════════
+        // LAYER 4: SomaBioEngine — Client-Side Biometric Computation
+        // Derives all HRV/wellness metrics from raw BPM + SpO2
+        // ═══════════════════════════════════════════════════
+        const SomaBioEngine = {
+            ibiBuffer: [],       // Rolling window of IBI values (ms)
+            bpmBuffer: [],       // Raw BPM history for trends
+            spo2Buffer: [],      // SpO2 history
+            MAX_BUFFER: 30,      // ~60s of data at 2s update intervals
+            MIN_FOR_HRV: 5,      // Minimum readings before HRV calc
+            _ready: false,       // True once buffer has enough data
+
+            /**
+             * Main entry point — feed raw BPM + SpO2, get full computed data object.
+             */
+            ingest(bpm, spo2) {
+                // Convert BPM → inter-beat interval (ms)
+                const ibi = 60000 / bpm;
+
+                // Push to rolling buffers
+                this.ibiBuffer.push(ibi);
+                this.bpmBuffer.push(bpm);
+                this.spo2Buffer.push(spo2);
+
+                // Trim to window size
+                if (this.ibiBuffer.length > this.MAX_BUFFER) this.ibiBuffer.shift();
+                if (this.bpmBuffer.length > this.MAX_BUFFER) this.bpmBuffer.shift();
+                if (this.spo2Buffer.length > this.MAX_BUFFER) this.spo2Buffer.shift();
+
+                // Check if we have enough data for HRV
+                this._ready = this.ibiBuffer.length >= this.MIN_FOR_HRV;
+
+                return this.compute(bpm, spo2);
+            },
+
+            /**
+             * Compute all derived metrics from current buffer state.
+             */
+            compute(bpm, spo2) {
+                const ibis = this.ibiBuffer;
+                const rmssd = this._ready ? this.calcRMSSD(ibis) : 0;
+                const sdnn = this._ready ? this.calcSDNN(ibis) : 0;
+                const pnn50 = this._ready ? this.calcPNN50(ibis) : 0;
+                const si = this._ready ? this.calcStressIndex(ibis) : 0;
+
+                // Recovery Score (from harware.md §4.6)
+                // RMSSD_norm: 0–100 based on 0–100ms range
+                const rmssdNorm = Math.min(rmssd / 100, 1) * 100;
+                // SI inverted: lower stress = higher recovery
+                const siNorm = Math.max(0, (10 - si) / 10) * 100;
+                // SpO2: 90–100% → 0–100
+                const spo2Norm = Math.max(0, (spo2 - 90) / 10) * 100;
+                const recovery = Math.round(rmssdNorm * 0.4 + siNorm * 0.4 + spo2Norm * 0.2);
+
+                // Wellness State classification (from harware.md §4.7)
+                const state = this._ready ? this.classifyState(si, rmssd, recovery) : 'Calm & Recovered';
+
+                // Stress level label
+                const stressLevel = si < 2 ? 'Low' : si < 4 ? 'Moderate' : 'High';
+
+                // Insight per state (from SOMA_CONTEXT.md)
+                const insightMap = {
+                    'Calm & Recovered': 'Your nervous system is settled. A good time to focus or rest deeply.',
+                    'Mildly Stressed': 'Your body is carrying some load. Slow breathing for a few minutes may help.',
+                    'Fatigued': 'You are calm but your body has not fully recovered. Rest will help more than activity right now.',
+                    'Under Load': 'Your autonomic system is working hard. Try to step away and give your body a moment to settle.'
+                };
+
+                return {
+                    bpm,
+                    spo2,
+                    rmssd: +rmssd.toFixed(1),
+                    sdnn: +sdnn.toFixed(1),
+                    pnn50: +pnn50.toFixed(1),
+                    stress_index: +si.toFixed(1),
+                    stress_level: stressLevel,
+                    recovery_score: Math.max(0, Math.min(100, recovery)),
+                    wellness_state: state,
+                    insight: insightMap[state] || '',
+                    _ready: this._ready,
+                    _bufferSize: ibis.length,
+                    _bufferNeeded: this.MIN_FOR_HRV
+                };
+            },
+
+            // ── HRV Metrics ─────────────────────────────────
+
+            /**
+             * RMSSD — Root Mean Square of Successive Differences
+             * Measures beat-to-beat variation (parasympathetic marker)
+             */
+            calcRMSSD(ibis) {
+                if (ibis.length < 2) return 0;
+                let sumSq = 0;
+                for (let i = 1; i < ibis.length; i++) {
+                    const diff = ibis[i] - ibis[i - 1];
+                    sumSq += diff * diff;
+                }
+                return Math.sqrt(sumSq / (ibis.length - 1));
+            },
+
+            /**
+             * SDNN — Standard Deviation of NN (IBI) intervals
+             * Measures overall HRV
+             */
+            calcSDNN(ibis) {
+                if (ibis.length < 2) return 0;
+                const mean = ibis.reduce((a, b) => a + b, 0) / ibis.length;
+                const variance = ibis.reduce((sum, v) => sum + (v - mean) ** 2, 0) / ibis.length;
+                return Math.sqrt(variance);
+            },
+
+            /**
+             * pNN50 — Percentage of successive IBI differences > 50ms
+             * Another parasympathetic marker
+             */
+            calcPNN50(ibis) {
+                if (ibis.length < 2) return 0;
+                let count = 0;
+                for (let i = 1; i < ibis.length; i++) {
+                    if (Math.abs(ibis[i] - ibis[i - 1]) > 50) count++;
+                }
+                return (count / (ibis.length - 1)) * 100;
+            },
+
+            /**
+             * Baevsky Stress Index (SI)
+             * SI = AMo / (2 × Mo × MxDMn)
+             * From harware.md §4.5
+             */
+            calcStressIndex(ibis) {
+                if (ibis.length < 3) return 1.0; // neutral default
+
+                // Build histogram with 50ms bins
+                const binWidth = 50;
+                const bins = {};
+                ibis.forEach(ibi => {
+                    const bin = Math.round(ibi / binWidth) * binWidth;
+                    bins[bin] = (bins[bin] || 0) + 1;
+                });
+
+                // Mo = mode (most frequent bin center)
+                let mo = 0, maxCount = 0;
+                for (const [bin, count] of Object.entries(bins)) {
+                    if (count > maxCount) { maxCount = count; mo = Number(bin); }
+                }
+
+                // AMo = amplitude of mode (% of IBIs in the modal bin)
+                const amo = (maxCount / ibis.length) * 100;
+
+                // MxDMn = variation range (max IBI - min IBI)
+                const mxdmn = Math.max(...ibis) - Math.min(...ibis);
+
+                // Guard against division by zero
+                if (mo === 0 || mxdmn === 0) return 1.0;
+
+                // SI formula — divide by 1000 to get values in the 0.5–10 range
+                // (Mo is in ms, so raw SI is very large; scaling brings it to Baevsky range)
+                const rawSI = amo / (2 * (mo / 1000) * (mxdmn / 1000));
+
+                // Clamp to expected range
+                return Math.max(0.5, Math.min(10, rawSI));
+            },
+
+            /**
+             * Wellness State Classification
+             * Decision matrix from harware.md §4.7
+             */
+            classifyState(si, rmssd, recovery) {
+                // Strict matches first
+                if (si > 4 && rmssd < 25 && recovery < 45) return 'Under Load';
+                if (si < 2 && rmssd < 25 && recovery < 45) return 'Fatigued';
+                if (si < 2 && rmssd > 40 && recovery > 65) return 'Calm & Recovered';
+                if (si >= 2 && si <= 4) return 'Mildly Stressed';
+
+                // Fuzzy fallbacks for in-between values
+                if (si > 4) return 'Under Load';
+                if (recovery < 45) return 'Fatigued';
+                if (si >= 2) return 'Mildly Stressed';
+                return 'Calm & Recovered';
+            },
+
+            /**
+             * Reset the engine (e.g. on reconnect)
+             */
+            reset() {
+                this.ibiBuffer = [];
+                this.bpmBuffer = [];
+                this.spo2Buffer = [];
+                this._ready = false;
+            }
+        };
+
+        // ═══════════════════════════════════════════════════
+        // ONBOARDING LOGIC
+        // ═══════════════════════════════════════════════════
+        let _obIsEdit = false;
+
+        function showOnboarding(isEdit = false) {
+            _obIsEdit = isEdit;
+            const ob = document.getElementById('onboarding');
+            const title = ob.querySelector('.ob-title');
+            const btn = document.getElementById('obSubmit');
+            title.textContent = isEdit ? 'Edit Profile' : 'Welcome to Soma';
+            btn.textContent = isEdit ? 'Save' : 'Continue';
+            if (isEdit) {
+                SomaDB.getProfile().then(p => {
+                    if (p) {
+                        document.getElementById('obAge').value = p.age;
+                        document.getElementById('obHeight').value = p.height_cm;
+                        document.getElementById('obWeight').value = p.weight_kg;
+                        updateObBmi();
+                    }
+                });
+            }
+            requestAnimationFrame(() => ob.classList.add('visible'));
+        }
+
+        function hideOnboarding() {
+            document.getElementById('onboarding').classList.remove('visible');
+        }
+
+        function updateObBmi() {
+            const h = parseFloat(document.getElementById('obHeight').value);
+            const w = parseFloat(document.getElementById('obWeight').value);
+            const a = parseFloat(document.getElementById('obAge').value);
+            const bmiEl = document.getElementById('obBmi');
+            const btn = document.getElementById('obSubmit');
+            const valid = a > 0 && h > 0 && w > 0;
+            btn.disabled = !valid;
+            if (h > 0 && w > 0) {
+                const bmi = (w / ((h / 100) ** 2)).toFixed(1);
+                bmiEl.textContent = `BMI: ${bmi}`;
+            } else { bmiEl.textContent = ''; }
+        }
+
+        // Attach input listeners after DOM
+        function initObListeners() {
+            ['obAge', 'obHeight', 'obWeight'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateObBmi);
+            });
+        }
+
+        async function submitOnboarding() {
+            const age = parseInt(document.getElementById('obAge').value);
+            const height_cm = parseInt(document.getElementById('obHeight').value);
+            const weight_kg = parseFloat(document.getElementById('obWeight').value);
+            if (!age || !height_cm || !weight_kg) return;
+
+            await SomaDB.saveProfile({ age, height_cm, weight_kg });
+            hideOnboarding();
+            document.getElementById('profileBtn').style.display = 'flex';
+
+            if (!_obIsEdit) {
+                await bootApp();
+            } else {
+                // Re-compute baselines with new profile
+                const profile = await SomaDB.getProfile();
+                await SomaAnalytics.computeBaselines(profile);
+                const baselines = await SomaDB.getBaselines();
+                const latest = window._latestSensorData || stateData[currentState];
+                await SomaInsights.generate(latest, baselines, profile);
+                updateContextCard();
+            }
+        }
+
+        // ─── WEBSOCKET CONFIG ───────────────────────────────
+        const WS_URL = "ws://192.168.4.1:80/";
+        let liveWs = null;
+        let currentState = "Calm & Recovered";
+        let currentTimeSlot = "morning";
+
+        function showConnStatus(msg, type) {
+            const el = document.getElementById('connStatus');
+            el.textContent = msg;
+            el.className = 'connection-status ' + type;
+            el.style.display = 'block';
+        }
+
+        function hideConnStatus() {
+            document.getElementById('connStatus').style.display = 'none';
+        }
+
+        function connectToSensor() {
+            if (liveWs) { liveWs.close(); liveWs = null; }
+            showConnStatus('Connecting to ESP32…', '');
+
+            liveWs = new WebSocket(WS_URL);
+
+            liveWs.onopen = () => {
+                showConnStatus('Connected to sensor ✓', 'connected');
+                setTimeout(() => hideConnStatus(), 3000);
+            };
+
+            liveWs.onmessage = (e) => {
+                try {
+                    const data = JSON.parse(e.data);
+                    console.log('[Soma] Raw sensor JSON:', JSON.stringify(data));
+                    applyLiveData(data);
+                } catch (err) {
+                    console.error('[Soma] Parse error:', err.message, 'Raw:', e.data);
+                    showConnStatus('Parse error: ' + err.message, 'error');
+                }
+            };
+
+            liveWs.onerror = () => {
+                showConnStatus('WebSocket error — check ESP32', 'error');
+            };
+
+            liveWs.onclose = () => {
+                showConnStatus('Connection lost. Reconnecting in 3s…', 'error');
+                setTimeout(connectToSensor, 3000);
+            };
+        }
+
+        // Map live sensor JSON → compute all metrics → update UI
+        function applyLiveData(data) {
+            const bpm = Number(data.bpm) || 0;
+            const spo2 = Number(data.spo2) || 0;
+
+            // Skip clearly invalid readings
+            if (bpm < 30 || bpm > 220) {
+                console.warn('[Soma] Skipping bad BPM reading:', bpm);
+                return;
+            }
+
+            console.log('[Soma] Raw sensor →', 'BPM:', bpm, 'SpO2:', spo2);
+
+            // ── Run through the BioEngine ──
+            const computed = SomaBioEngine.ingest(bpm, spo2);
+
+            hasLiveData = true;
+            currentState = computed.wellness_state;
+
+            console.log('[Soma] Computed →', computed);
+            console.log('[Soma] State:', currentState, '| Ready:', computed._ready,
+                '| Buffer:', computed._bufferSize + '/' + computed._bufferNeeded);
+
+            const sleep = sleepDefaults[currentState] || { sleepDur: '—', sleepCopy: '—' };
+            const liveData = {
+                ...computed,
+                sleepDur: sleep.sleepDur,
+                sleepCopy: sleep.sleepCopy
+            };
+
+            // Store latest data globally for detail views
+            window._latestSensorData = liveData;
+
+            // Persist to IndexedDB (throttled to 1 write / 10s)
+            SomaDB.storeReading({ ...liveData });
+
+            updateUI(currentState, currentTimeSlot, liveData);
+        }
+
+        // ─── THEMES (Ambient, Subdued Gradients) ────────────
+        const themes = {
+            "Calm & Recovered": {
+                bgBase: "#0a100a",
+                bgGrad1: "rgba(144,184,136,0.12)",
+                bgGrad2: "rgba(184,212,176,0.06)",
+                blobColor: 0x90b888 // Pastel green
+            },
+            "Mildly Stressed": {
+                bgBase: "#100c08",
+                bgGrad1: "rgba(212,160,120,0.12)",
+                bgGrad2: "rgba(232,196,160,0.06)",
+                blobColor: 0xd4a078 // Warm orange
+            },
+            "Fatigued": {
+                bgBase: "#0c0a10",
+                bgGrad1: "rgba(168,152,192,0.12)",
+                bgGrad2: "rgba(200,192,216,0.06)",
+                blobColor: 0xa898c0 // Soft purple
+            },
+            "Under Load": {
+                bgBase: "#100808",
+                bgGrad1: "rgba(200,128,112,0.15)",
+                bgGrad2: "rgba(228,176,160,0.08)",
+                blobColor: 0xc88070 // Dim red
+            }
+        };
+
+        const motionProfiles = {
+            "Calm & Recovered": {
+                speed: 0.15,     // Very slow, lazy wobble
+                intensity: 0.15, // Extremely smooth surface
+                exp: 2.0,        // Smooth, wide calm breathing
+                amp: 0.08        // Subtle, relaxing expansion
+            },
+            "Mildly Stressed": {
+                speed: 0.6,
+                intensity: 0.45, // More jagged surface
+                exp: 6.0,        // Sharper, rushed beat
+                amp: 0.09        // Shallower expansion
+            },
+            "Fatigued": {
+                speed: 0.2,      // Sluggish surface
+                intensity: 0.2,  // Very flat surface
+                exp: 3.0,
+                amp: 0.05        // Weak, shallow beat
+            },
+            "Under Load": {
+                speed: 0.9,      // Fast, but not chaotic wobble
+                intensity: 0.55, // Distorted, but not overly spiky
+                exp: 8.0,        // Sharp beat, but less aggressive
+                amp: 0.12        // Noticeable pounding, but reigned in
+            }
+        };
+
+        // ─── DATA MODELS ────────────────────────────────────
+        let hasLiveData = false; // True once first sensor reading arrives
+
+        // Sleep data is the only thing kept as defaults (sensor doesn't provide it)
+        const sleepDefaults = {
+            "Calm & Recovered": { sleepDur: "7h 48m", sleepCopy: "You hit your target last night. Your body had time to repair." },
+            "Mildly Stressed": { sleepDur: "6h 15m", sleepCopy: "Just under your target. A consistent bedtime would help." },
+            "Fatigued": { sleepDur: "5h 30m", sleepCopy: "You slept less than your body needs. Recovery will be slower today." },
+            "Under Load": { sleepDur: "6h 42m", sleepCopy: "Just under your target. Autonomic system is working hard." }
+        };
+
+        // Empty defaults — no fake data. Everything comes from the sensor.
+        const stateData = {
+            "Calm & Recovered": {
+                bpm: 0, spo2: 0, rmssd: 0, sdnn: 0, stress_index: 0, recovery_score: 0,
+                sleepDur: "—", sleepCopy: "Waiting for sensor data."
+            },
+            "Mildly Stressed": {
+                bpm: 0, spo2: 0, rmssd: 0, sdnn: 0, stress_index: 0, recovery_score: 0,
+                sleepDur: "—", sleepCopy: "Waiting for sensor data."
+            },
+            "Fatigued": {
+                bpm: 0, spo2: 0, rmssd: 0, sdnn: 0, stress_index: 0, recovery_score: 0,
+                sleepDur: "—", sleepCopy: "Waiting for sensor data."
+            },
+            "Under Load": {
+                bpm: 0, spo2: 0, rmssd: 0, sdnn: 0, stress_index: 0, recovery_score: 0,
+                sleepDur: "—", sleepCopy: "Waiting for sensor data."
+            }
+        };
+
+        // Safe clamp helper — guards against NaN, Infinity, and out-of-range values
+        function safeCalc(value, min = 0, max = 100) {
+            const n = Number(value);
+            if (!Number.isFinite(n)) return min;
+            return Math.round(Math.max(min, Math.min(max, n)));
+        }
+
+        const homeMetricConfig = {
+            morning: {
+                key: "readiness", label: "READINESS",
+                calc: (d) => safeCalc(
+                    ((d.rmssd / 100) * 40) + (((10 - d.stress_index) / 10) * 40) + (((d.spo2 - 90) / 10) * 20)
+                ),
+                getCopy: (val) => {
+                    if (val >= 75) return { h: "You're primed", s: "Good capacity today. Your body recovered well." };
+                    if (val >= 50) return { h: "You'll be alright", s: "Moderate capacity. Steady effort is fine today." };
+                    return { h: "Take it slow", s: "Your body needs more rest than your mind thinks." };
+                }
+            },
+            afternoon: {
+                key: "focus", label: "FOCUS",
+                calc: (d) => safeCalc(
+                    d.sdnn > 0 ? (d.rmssd / d.sdnn) * 50 : 0
+                ),
+                getCopy: (val) => {
+                    if (val >= 67) return { h: "Locked in", s: "Good conditions for deep, sustained work." };
+                    if (val >= 34) return { h: "Wandering mind", s: "Moderate coherence. Short breaks will help." };
+                    return { h: "Scattered state", s: "Avoid demanding cognitive tasks right now." };
+                }
+            },
+            evening: {
+                key: "tension", label: "TENSION",
+                calc: (d) => safeCalc(
+                    (d.stress_index / 10) * 100
+                ),
+                getCopy: (val) => {
+                    if (val >= 67) return { h: "Wound up", s: "High tension carried forward. Wind down intentionally." };
+                    if (val >= 34) return { h: "Lingering load", s: "Some load still present. A walk would help clear it." };
+                    return { h: "Letting go", s: "Minimal load. Your body handled today well." };
+                }
+            },
+            night: {
+                key: "steadiness", label: "STEADINESS",
+                calc: (d) => safeCalc(
+                    (d.rmssd / 100) * 100
+                ),
+                getCopy: (val) => {
+                    if (val >= 67) return { h: "Winding down", s: "Your nervous system is settling. Good conditions for sleep." };
+                    if (val >= 34) return { h: "Still active", s: "Still some activation. Give it more time to come down." };
+                    return { h: "Running hot", s: "Body still running hot. Avoid screens and stimulation." };
+                }
+            }
+        };
+
+        // ─── SCROLL MECHANICS ───────────────────────────────
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const vh = window.innerHeight;
+
+            let progress = scrollY / (vh * 0.7);
+            if (progress > 1) progress = 1;
+            if (progress < 0) progress = 0;
+
+            // 1. Fade out home text entirely
+            const homeContent = document.getElementById('homeContent');
+            homeContent.style.opacity = 1 - (progress * 1.5);
+
+            // 2. Scale & morph orb container into a background liquid glow
+            // By stretching horizontally more than vertically, it mimics an irregular liquid pool 
+            // rather than just a scaled-up circle.
+            const orbContainer = document.getElementById('orbContainer');
+            orbContainer.style.opacity = 1 - (progress * 0.85); // Toned down to be less distracting
+            orbContainer.style.filter = `blur(${progress * 60}px)`;
+            orbContainer.style.transform = `scaleX(${1 + (progress * 3)}) scaleY(${1 + (progress * 1.5)}) translateY(${scrollY * 0.15}px)`;
+
+            // 3. Remove the bottom glow entirely when scrolled
+            const bgLayer = document.getElementById('bgLayer');
+            if (bgLayer) {
+                bgLayer.style.opacity = 1 - progress;
+            }
+
+            // 4. Toggle Sticky Top Bar
+            const stickyTopBar = document.getElementById('stickyTopBar');
+            const profileBtn = document.getElementById('profileBtn');
+            if (stickyTopBar) {
+                if (progress > 0.15) {
+                    stickyTopBar.classList.add('visible');
+                    if (profileBtn) {
+                        profileBtn.style.opacity = '0';
+                        profileBtn.style.pointerEvents = 'none';
+                    }
+                } else {
+                    stickyTopBar.classList.remove('visible');
+                    if (profileBtn) {
+                        profileBtn.style.opacity = '1';
+                        profileBtn.style.pointerEvents = 'auto';
+                    }
+                }
+            }
+        }
+
+        // ─── UI UPDATE ──────────────────────────────────────
+        function updateUI(stateName, timeSlot, rawData) {
+            const tConfig = homeMetricConfig[timeSlot];
+
+            // Theme & Motion updates
+            const theme = themes[stateName];
+            if (!theme) return;
+            const root = document.documentElement.style;
+            root.setProperty('--bg-base', theme.bgBase);
+            root.setProperty('--bg-gradient-1', theme.bgGrad1);
+            root.setProperty('--bg-gradient-2', theme.bgGrad2);
+
+            window.targetProfile = motionProfiles[stateName];
+
+            // Update WebGL Blob Color
+            if (window.blobUniforms && window.blobUniforms.u_color) {
+                window.blobUniforms.u_color.value.setHex(theme.blobColor);
+            }
+
+            // Home Screen — three states: waiting, warming up, live
+            if (!hasLiveData) {
+                // State 1: No sensor connection yet
+                document.getElementById('homeNumber').textContent = '--';
+                document.getElementById('homeLabel').textContent = tConfig.label;
+                document.getElementById('homeCopy').textContent = 'Waiting for sensor';
+                document.getElementById('homeSubcopy').textContent = 'Connect your ESP32 to see live data.';
+            } else if (rawData._ready === false) {
+                // State 2: Connected but engine still building IBI buffer
+                document.getElementById('homeNumber').textContent = rawData.bpm;
+                document.getElementById('homeLabel').textContent = 'BPM';
+                document.getElementById('homeCopy').textContent = 'Setting up your wellness';
+                document.getElementById('homeSubcopy').textContent = `Reading your body… ${rawData._bufferSize}/${rawData._bufferNeeded}`;
+            } else {
+                // State 3: Fully operational — show computed time-of-day metric
+                const mainVal = tConfig.calc(rawData);
+                const copyObj = tConfig.getCopy(mainVal);
+                document.getElementById('homeNumber').textContent = mainVal;
+                document.getElementById('homeLabel').textContent = tConfig.label;
+                document.getElementById('homeCopy').textContent = copyObj.h;
+                document.getElementById('homeSubcopy').textContent = copyObj.s;
+
+                // Update sticky top bar with live mock data
+                if (document.getElementById('stbBpm')) {
+                    document.getElementById('stbBpm').textContent = Math.round(rawData.bpm);
+                }
+                if (document.getElementById('stbSpo2')) {
+                    document.getElementById('stbSpo2').textContent = Math.round(rawData.spo2);
+                }
+            }
+
+            const d = hasLiveData ? rawData : null;
+
+            if (d) {
+                // 1. Readiness (Recovery Score)
+                const readiness = d.recovery_score || 0;
+                document.getElementById('cardReadinessVal').textContent = readiness;
+                document.getElementById('cardReadinessDot').style.left = readiness + '%';
+                let rColor = "#D8ECD4";
+                if (readiness < 40) rColor = "#D4A078";
+                else if (readiness < 70) rColor = "#F4DEC4";
+                document.getElementById('cardReadinessVal').style.color = rColor;
+                document.getElementById('cardReadinessInsight').textContent = d.insight || "Data processing...";
+
+                // 2. Steadiness (RMSSD)
+                const steadiness = d.rmssd || 0;
+                document.getElementById('cardSteadinessValNow').textContent = steadiness;
+                document.getElementById('cardSteadinessBarNow').style.height = Math.min(100, Math.max(10, steadiness)) + '%';
+                document.getElementById('cardSteadinessInsight').textContent = d._ready ? "Real-time HRV variability measured." : "Calibrating baseline...";
+
+                // 3. Tension + Energy
+                const tension = Math.round(Math.min(((d.stress_index || 0) / 10) * 100, 100));
+                document.getElementById('cardTensionVal').textContent = tension;
+                const dashOffset = 188.5 - (188.5 * (tension / 100));
+                document.getElementById('cardTensionArc').style.strokeDashoffset = dashOffset;
+                let tLabel = "low";
+                if (tension > 60) tLabel = "high";
+                else if (tension > 30) tLabel = "med";
+                document.getElementById('cardTensionLabel').textContent = tLabel;
+
+                const energy = d.recovery_score || 0;
+                document.getElementById('cardEnergyVal').textContent = energy;
+                document.getElementById('cardEnergyBar').style.width = energy + '%';
+                document.getElementById('cardEnergyTrend').innerHTML = energy > 50 ? '↑ Steady' : '↓ Draining';
+
+                // 4. Focus
+                const focusVal = Math.round(Math.min((((d.rmssd || 1) / (d.sdnn || 1)) * 50), 100));
+                document.getElementById('cardFocusValNow').textContent = focusVal;
+                document.getElementById('cardFocusBarNow').style.width = focusVal + '%';
+                document.getElementById('cardFocusInsight').textContent = focusVal > 60 ? "Current window shows high autonomic coherence." : "Lower coherence compared to weekly average.";
+
+                // 5. Sleep
+                document.getElementById('cardSleepVal').textContent = d.sleepDur || '—';
+                document.getElementById('cardSleepInsight').textContent = d.sleepCopy || 'Waiting for sensor data.';
+                let hrs = parseInt(d.sleepDur) || 0;
+                let percent = Math.min(100, (hrs / 7.5) * 100);
+                document.getElementById('cardSleepBarToday').style.height = percent + '%';
+                document.getElementById('cardSleepBar').style.width = percent + '%';
+            }
+
+            // Update target BPM for blob breathing
+            window.targetBpm = d ? d.bpm : 60;
+        }
+
+        // ─── DETAIL VIEW LOGIC ──────────────────────────────
+        const detailMockData = {
+            hr: {
+                title: "Heart Rate", val: "62", unit: "bpm", themeColor: "#ff4d4d", icon: "❤️",
+                mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="2" y="45" width="12" height="55" fill="var(--theme-color)" rx="2" opacity="0.6"/><rect x="17" y="30" width="12" height="70" fill="var(--theme-color)" rx="2" opacity="0.7"/><rect x="32" y="50" width="12" height="50" fill="var(--theme-color)" rx="2" opacity="0.55"/><rect x="47" y="20" width="12" height="80" fill="var(--theme-color)" rx="2" opacity="0.8"/><rect x="62" y="38" width="12" height="62" fill="var(--theme-color)" rx="2" opacity="0.65"/><rect x="77" y="42" width="12" height="58" fill="var(--theme-color)" rx="2" opacity="0.6"/><rect x="87" y="35" width="12" height="65" fill="var(--theme-color)" rx="2" opacity="0.9"/></svg>`,
+                highlights: [
+                    {
+                        copy: "Your resting HR dropped 5 bpm since you started running in October. Your body is adapting.",
+                        label1: "Now", val1: "62", color1: "var(--theme-color)",
+                        label2: "Oct avg", val2: "67", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 10 Q 15 15 30 12 T 55 18 T 80 22 T 100 30" fill="none" stroke="var(--text-secondary)" stroke-width="2" opacity="0.4"/><path d="M0 5 Q 15 8 30 6 T 55 12 T 80 20 T 100 35" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="100" cy="35" r="3" fill="var(--theme-color)"/></svg>`
+                    },
+                    {
+                        copy: "During your work deadline in December, resting HR spiked to 74 bpm for two weeks — a clear stress signal.",
+                        label1: "Deadline peak", val1: "74", color1: "#ffb84d",
+                        label2: "Baseline", val2: "64", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="18" width="100" height="6" fill="var(--text-secondary)" rx="3" opacity="0.2"/><rect x="0" y="18" width="74" height="6" fill="#ffb84d" rx="3"/><rect x="0" y="28" width="64" height="6" fill="var(--text-secondary)" rx="3" opacity="0.4"/></svg>`
+                    }
+                ]
+            },
+            energy: {
+                title: "Energy & Recovery", val: "82", unit: "%", themeColor: "#4dff88", icon: "⚡",
+                mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 55 C 15 50, 25 30, 40 40 C 55 50, 65 25, 80 20 C 90 18, 95 15, 100 12 L100 100 Z" fill="var(--theme-color)" opacity="0.3"/><path d="M0 55 C 15 50, 25 30, 40 40 C 55 50, 65 25, 80 20 C 90 18, 95 15, 100 12" fill="none" stroke="var(--theme-color)" stroke-width="2.5"/></svg>`,
+                highlights: [
+                    {
+                        copy: "Recovery improved 15% since adding meditation to your routine in March. Your parasympathetic tone is noticeably stronger.",
+                        label1: "April", val1: "82%", color1: "var(--theme-color)",
+                        label2: "Sept", val2: "68%", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="8" width="82" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="24" width="68" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
+                    },
+                    {
+                        copy: "Your worst recovery week was during the cold in November — recovery dipped to 52% average for 8 days.",
+                        label1: "Worst week", val1: "52%", color1: "#ffb84d",
+                        label2: "Best week", val2: "89%", color2: "var(--theme-color)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 20 L 20 18 L 35 30 L 50 32 L 60 28 L 75 15 L 100 8" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="35" cy="30" r="3" fill="#ffb84d"/><circle cx="100" cy="8" r="3" fill="var(--theme-color)"/></svg>`
+                    }
+                ]
+            },
+            steadiness: {
+                title: "Steadiness (RMSSD)", val: "48", unit: "ms", themeColor: "#4da6ff", icon: "🌊",
+                mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="2" y="55" width="12" height="45" fill="var(--theme-color)" rx="2" opacity="0.4"/><rect x="17" y="40" width="12" height="60" fill="var(--theme-color)" rx="2" opacity="0.5"/><rect x="32" y="45" width="12" height="55" fill="var(--theme-color)" rx="2" opacity="0.55"/><rect x="47" y="30" width="12" height="70" fill="var(--theme-color)" rx="2" opacity="0.65"/><rect x="62" y="35" width="12" height="65" fill="var(--theme-color)" rx="2" opacity="0.7"/><rect x="77" y="25" width="12" height="75" fill="var(--theme-color)" rx="2" opacity="0.8"/><rect x="87" y="20" width="12" height="80" fill="var(--theme-color)" rx="2" opacity="0.9"/></svg>`,
+                highlights: [
+                    {
+                        copy: "Your HRV baseline rose from 38ms to 48ms over 8 months — a strong sign of improving autonomic health.",
+                        label1: "Current", val1: "48", color1: "var(--theme-color)",
+                        label2: "8mo ago", val2: "38", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 32 Q 25 28 50 22 T 100 8" fill="none" stroke="var(--theme-color)" stroke-width="2.5"/><circle cx="0" cy="32" r="3" fill="var(--text-secondary)"/><circle cx="100" cy="8" r="3" fill="var(--theme-color)"/></svg>`
+                    },
+                    {
+                        copy: "Weekends consistently show 12% higher HRV than weekdays — your body clearly benefits from the reduced load.",
+                        label1: "Weekends", val1: "54", color1: "var(--theme-color)",
+                        label2: "Weekdays", val2: "44", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="5" y="5" width="40" height="10" fill="var(--theme-color)" rx="5"/><rect x="5" y="22" width="33" height="10" fill="var(--text-secondary)" rx="5" opacity="0.4"/></svg>`
+                    }
+                ]
+            },
+            stress: {
+                title: "Stress Index", val: "1.4", unit: "", themeColor: "#ffb84d", icon: "〰️",
+                mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 40 C 15 35 25 60 40 55 C 55 50 65 70 75 45 C 85 30 95 35 100 30" fill="none" stroke="var(--theme-color)" stroke-width="2.5"/><path d="M0 100 L0 40 C 15 35 25 60 40 55 C 55 50 65 70 75 45 C 85 30 95 35 100 30 L100 100 Z" fill="var(--theme-color)" opacity="0.15"/></svg>`,
+                highlights: [
+                    {
+                        copy: "Today's stress index of 1.4 is well below your 8-month average. Your nervous system is in a good place.",
+                        label1: "Today", val1: "1.4", color1: "var(--theme-color)",
+                        label2: "8mo avg", val2: "2.8", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="16" width="35" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="28" width="70" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
+                    },
+                    {
+                        copy: "Your December deadline pushed stress to 6.2 for 10 days straight — the highest sustained period in your history.",
+                        label1: "Dec peak", val1: "6.2", color1: "#ff5050",
+                        label2: "Jan recovery", val2: "1.9", color2: "var(--theme-color)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 30 L 20 28 L 35 5 L 50 8 L 65 25 L 80 30 L 100 32" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="35" cy="5" r="3" fill="#ff5050"/></svg>`
+                    }
+                ]
+            },
+            sleep: {
+                title: "Sleep & Recovery", val: "7", unit: "h 24m", themeColor: "#b366ff", icon: "🌙",
+                mainChart: `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 40 C 15 35, 25 45, 40 30 C 55 20, 65 35, 80 25 C 90 20, 95 22, 100 18 L100 100 Z" fill="var(--theme-color)" opacity="0.3"/><path d="M0 40 C 15 35, 25 45, 40 30 C 55 20, 65 35, 80 25 C 90 20, 95 22, 100 18" fill="none" stroke="var(--theme-color)" stroke-width="2.5"/></svg>`,
+                highlights: [
+                    {
+                        copy: "Your sleep efficiency is consistently higher on weekends — averaging 7h 50m vs 6h 45m on weekdays.",
+                        label1: "Weekend", val1: "7h 50m", color1: "var(--theme-color)",
+                        label2: "Weekday", val2: "6h 45m", color2: "var(--text-secondary)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><rect x="0" y="10" width="88" height="8" fill="var(--theme-color)" rx="4"/><rect x="0" y="26" width="72" height="8" fill="var(--text-secondary)" rx="4" opacity="0.3"/></svg>`
+                    },
+                    {
+                        copy: "In February your sleep dropped below 6 hours for 11 consecutive nights — your HRV fell 18% during that stretch.",
+                        label1: "Feb avg", val1: "5h 40m", color1: "#ff5050",
+                        label2: "Apr avg", val2: "7h 24m", color2: "var(--theme-color)",
+                        chart: `<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 30 L 25 32 L 40 35 L 55 20 L 75 12 L 100 8" fill="none" stroke="var(--theme-color)" stroke-width="2"/><circle cx="40" cy="35" r="3" fill="#ff5050"/><circle cx="100" cy="8" r="3" fill="var(--theme-color)"/></svg>`
+                    }
+                ]
+            }
+        };
+
+        let currentDetailMetric = null;
+
+        function changeTimeTab(element, range) {
+            // Update active tab styling
+            document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+
+            // Load new chart if available
+            if (currentDetailMetric && detailMockData[currentDetailMetric]) {
+                const data = detailMockData[currentDetailMetric];
+                let chartContent = data.mainChart;
+
+                // Generate a visually distinct mock chart for demo purposes
+                if (range === 'D') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="10" y="20" width="80" height="60" fill="var(--theme-color)" rx="4" opacity="0.8"/></svg>`;
+                if (range === 'W') chartContent = data.mainChart;
+                if (range === 'M') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10 L100 100 Z" fill="var(--theme-color)" opacity="0.4"/><path d="M0 50 C 20 50, 30 10, 50 30 C 70 50, 80 20, 100 10" fill="none" stroke="var(--theme-color)" stroke-width="3"/></svg>`;
+                if (range === '6M') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 80 Q 25 60 50 80 T 100 80" fill="none" stroke="var(--theme-color)" stroke-width="3" stroke-dasharray="4 6"/></svg>`;
+                if (range === 'Y') chartContent = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="5" y="30" width="15" height="70" fill="var(--theme-color)" rx="2"/><rect x="25" y="40" width="15" height="60" fill="var(--theme-color)" rx="2"/><rect x="45" y="20" width="15" height="80" fill="var(--theme-color)" rx="2"/><rect x="65" y="50" width="15" height="50" fill="var(--theme-color)" rx="2"/><rect x="85" y="10" width="15" height="90" fill="var(--theme-color)" rx="2"/></svg>`;
+
+                document.getElementById('dvMainChart').innerHTML = chartContent;
+            }
+        }
+
+        function openDetailView(key) {
+            const mockData = detailMockData[key];
+            if (!mockData) return;
+
+            currentDetailMetric = key;
+            const dv = document.getElementById('detailView');
+            const live = window._latestSensorData;
+
+            // Reset tabs to W
+            document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.time-tab')[1].classList.add('active'); // "W" is 2nd
+
+            // Use live data if available, otherwise fall back to mock
+            let displayVal = mockData.val;
+            let displayUnit = mockData.unit;
+            if (live && hasLiveData) {
+                if (key === 'hr') displayVal = live.bpm;
+                else if (key === 'energy') displayVal = live.recovery_score;
+                else if (key === 'steadiness') displayVal = live.rmssd;
+                else if (key === 'stress') displayVal = live.stress_index;
+                else if (key === 'sleep') displayVal = mockData.val; // sensor doesn't provide sleep
+            }
+
+            // Set basic data
+            document.getElementById('dvTitle').textContent = mockData.title;
+            document.getElementById('dvMainVal').innerHTML = `${displayVal} <span class="main-chart-unit">${displayUnit}</span>`;
+            document.getElementById('dvMainChart').innerHTML = mockData.mainChart;
+
+            // Set theme variable for charts
+            dv.style.setProperty('--theme-color', mockData.themeColor);
+
+            // Generate highlights — use live data for current values, mock for chart visuals
+            let highlightsHtml = '';
+            mockData.highlights.forEach(hl => {
+                // Override "Today" / "Current" values with live data
+                let liveVal1 = hl.val1;
+                if (live && hasLiveData) {
+                    if (key === 'hr') liveVal1 = live.bpm;
+                    else if (key === 'energy') liveVal1 = live.recovery_score + '%';
+                    else if (key === 'steadiness') liveVal1 = live.rmssd;
+                    else if (key === 'stress') liveVal1 = live.stress_index;
+                }
+
+                highlightsHtml += `
       <div class="highlight-card">
-        <div class="hc-icon-title">${data.icon} ${data.title}</div>
+        <div class="hc-icon-title">${mockData.icon} ${mockData.title}</div>
         <div class="hc-copy">${hl.copy}</div>
         <div class="hc-stats-row">
           <div class="hc-stat">
             <div class="hc-stat-label" style="color: ${hl.color1}">${hl.label1}</div>
-            <div class="hc-stat-val" style="color: ${hl.color1}">${hl.val1} <span class="hc-stat-unit">${data.unit}</span></div>
+            <div class="hc-stat-val" style="color: ${hl.color1}">${liveVal1} <span class="hc-stat-unit">${mockData.unit}</span></div>
           </div>
           <div class="hc-stat">
             <div class="hc-stat-label" style="color: ${hl.color2}">${hl.label2}</div>
-            <div class="hc-stat-val" style="color: ${hl.color2}">${hl.val2} <span class="hc-stat-unit">${data.unit}</span></div>
+            <div class="hc-stat-val" style="color: ${hl.color2}">${hl.val2} <span class="hc-stat-unit">${mockData.unit}</span></div>
           </div>
         </div>
         <div class="hc-chart">
@@ -1850,36 +3024,59 @@ function openDetailView(key) {
         </div>
       </div>
     `;
-  });
-  
-  document.getElementById('dvHighlights').innerHTML = highlightsHtml;
+            });
 
-  // Slide in
-  dv.classList.add('open');
-  document.body.style.overflow = 'hidden'; // Prevent background scrolling
-}
+            // Inject personalized insights from SomaInsights engine
+            const metricInsights = SomaInsights.getForMetric(key);
+            metricInsights.forEach(ins => {
+                const sevColor = ins.severity === 'critical' ? '#ff5050' : ins.severity === 'warning' ? '#ffb84d' : mockData.themeColor;
+                highlightsHtml += `
+      <div class="highlight-card">
+        <div class="hc-icon-title" style="color: ${sevColor}">✦ ${ins.title}</div>
+        <div class="hc-copy">${ins.body}</div>
+        <div class="hc-copy" style="font-size:14px; color: var(--text-secondary); margin-bottom:0;">${ins.advice || ''}</div>
+      </div>
+    `;
+            });
 
-function closeDetailView() {
-  document.getElementById('detailView').classList.remove('open');
-  document.body.style.overflow = '';
-}
+            // If we have live sensor insight text, show it as an extra highlight
+            if (live && live.insight) {
+                highlightsHtml += `
+      <div class="highlight-card">
+        <div class="hc-icon-title" style="color: var(--text-secondary)">💡 Sensor Insight</div>
+        <div class="hc-copy">${live.insight}</div>
+      </div>
+    `;
+            }
 
-// ─── THREE.JS BLOB LOGIC ────────────────────────────
-window.targetBpm = 60;
-window.currentBpm = 60;
+            document.getElementById('dvHighlights').innerHTML = highlightsHtml;
 
-window.targetProfile = { speed: 0.3, intensity: 0.25, exp: 2.0, amp: 0.12 };
-window.currentProfile = { speed: 0.3, intensity: 0.25, exp: 2.0, amp: 0.12 };
-window.accumulatedTime = 0;
-window.beatPhase = 0;
+            // Slide in
+            dv.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
 
-window.blobUniforms = {
-  u_time: { value: 0 },
-  u_intensity: { value: 0.3 }, 
-  u_color: { value: null } 
-};
+        function closeDetailView() {
+            document.getElementById('detailView').classList.remove('open');
+            document.body.style.overflow = '';
+        }
 
-const vertexShader = `
+        // ─── THREE.JS BLOB LOGIC ────────────────────────────
+        window.targetBpm = 60;
+        window.currentBpm = 60;
+
+        window.targetProfile = { speed: 0.3, intensity: 0.25, exp: 2.0, amp: 0.12 };
+        window.currentProfile = { speed: 0.3, intensity: 0.25, exp: 2.0, amp: 0.12 };
+        window.accumulatedTime = 0;
+        window.beatPhase = 0;
+
+        window.blobUniforms = {
+            u_time: { value: 0 },
+            u_intensity: { value: 0.3 },
+            u_color: { value: null }
+        };
+
+        const vertexShader = `
 uniform float u_intensity;
 uniform float u_time;
 varying vec2 vUv;
@@ -1929,7 +3126,7 @@ void main() {
 }
 `;
 
-const fragmentShader = `
+        const fragmentShader = `
 uniform float u_intensity;
 uniform float u_time;
 uniform vec3 u_color;
@@ -1967,106 +3164,350 @@ void main() {
 }
 `;
 
-function initThreeBlob() {
-  if (typeof THREE === 'undefined') {
-    console.error("Three.js failed to load.");
-    return;
-  }
-  
-  window.blobUniforms.u_color.value = new THREE.Color(0x90b888); // Default
+        function initThreeBlob() {
+            if (typeof THREE === 'undefined') {
+                console.error("Three.js failed to load.");
+                return;
+            }
 
-  const container = document.getElementById('canvas-container');
-  const scene = new THREE.Scene();
-  
-  // Camera matches R3F snippet
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 8;
+            window.blobUniforms.u_color.value = new THREE.Color(0x90b888); // Default
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(220, 220); // Match original blob container size
-  renderer.setPixelRatio(window.devicePixelRatio);
-  container.appendChild(renderer.domElement);
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
 
-  const tinyContainer = document.getElementById('tinyOrbContainer');
-  const tinyRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  if (tinyContainer) {
-    tinyRenderer.setSize(20, 20);
-    tinyRenderer.setPixelRatio(window.devicePixelRatio);
-    tinyContainer.appendChild(tinyRenderer.domElement);
-  }
+            // Camera matches R3F snippet
+            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+            camera.position.z = 8;
 
-  const geometry = new THREE.IcosahedronGeometry(2, 60); // Increased detail for smoother lighting
-  const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    uniforms: window.blobUniforms,
-    extensions: { derivatives: true }
-  });
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(220, 220); // Match original blob container size
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
 
-  const mesh = new THREE.Mesh(geometry, material);
-  // Base scale reduced by 20%
-  mesh.scale.set(1.2, 1.2, 1.2);
-  scene.add(mesh);
+            const tinyContainer = document.getElementById('tinyOrbContainer');
+            const tinyRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            if (tinyContainer) {
+                tinyRenderer.setSize(20, 20);
+                tinyRenderer.setPixelRatio(window.devicePixelRatio);
+                tinyContainer.appendChild(tinyRenderer.domElement);
+            }
 
-  const clock = new THREE.Clock();
+            const geometry = new THREE.IcosahedronGeometry(2, 60); // Increased detail for smoother lighting
+            const material = new THREE.ShaderMaterial({
+                vertexShader,
+                fragmentShader,
+                uniforms: window.blobUniforms,
+                extensions: { derivatives: true }
+            });
 
-  function animate() {
-    requestAnimationFrame(animate);
-    const delta = clock.getDelta();
-    
-    // Interpolate motion profile properties
-    window.currentProfile.speed += (window.targetProfile.speed - window.currentProfile.speed) * 0.05;
-    window.currentProfile.intensity += (window.targetProfile.intensity - window.currentProfile.intensity) * 0.05;
-    window.currentProfile.exp += (window.targetProfile.exp - window.currentProfile.exp) * 0.05;
-    window.currentProfile.amp += (window.targetProfile.amp - window.currentProfile.amp) * 0.05;
+            const mesh = new THREE.Mesh(geometry, material);
+            // Base scale reduced by 20%
+            mesh.scale.set(1.2, 1.2, 1.2);
+            scene.add(mesh);
 
-    // Accumulate time for continuous shader wobble
-    window.accumulatedTime += delta * window.currentProfile.speed;
-    window.blobUniforms.u_time.value = window.accumulatedTime;
-    window.blobUniforms.u_intensity.value = window.currentProfile.intensity;
-    
-    // BPM Heartbeat Logic
-    window.currentBpm += (window.targetBpm - window.currentBpm) * 0.05;
-    
-    // True heartbeat duration (e.g. 60bpm = 1.0s, 120bpm = 0.5s)
-    const cycleDur = 60.0 / window.currentBpm;
-    
-    // Accumulate phase to guarantee smooth beats even when BPM changes
-    window.beatPhase += delta / cycleDur;
-    if (window.beatPhase > 1.0) window.beatPhase -= 1.0;
-    
-    // Heartbeat impulse math. sin(phase * PI) gives a 0->1->0 curve.
-    // The exponent shapes it into a sharp spike or a soft hill.
-    const beat = Math.pow(Math.sin(window.beatPhase * Math.PI), window.currentProfile.exp);
-    
-    // Scale jumps based on the beat amplitude
-    const scale = 1.16 + (window.currentProfile.amp * beat); 
-    mesh.scale.set(scale, scale, scale);
+            const clock = new THREE.Clock();
 
-    renderer.render(scene, camera);
-    if (tinyContainer) tinyRenderer.render(scene, camera);
-  }
-  
-  animate();
-}
+            function animate() {
+                requestAnimationFrame(animate);
+                const delta = clock.getDelta();
 
-// ─── INIT ───────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-  const h = new Date().getHours();
-  let defaultTime = "morning";
-  if(h >= 11 && h < 16) defaultTime = "afternoon";
-  if(h >= 16 && h < 20) defaultTime = "evening";
-  if(h >= 20 || h < 5) defaultTime = "night";
-  document.getElementById('timeSelect').value = defaultTime;
+                // Interpolate motion profile properties
+                window.currentProfile.speed += (window.targetProfile.speed - window.currentProfile.speed) * 0.05;
+                window.currentProfile.intensity += (window.targetProfile.intensity - window.currentProfile.intensity) * 0.05;
+                window.currentProfile.exp += (window.targetProfile.exp - window.currentProfile.exp) * 0.05;
+                window.currentProfile.amp += (window.targetProfile.amp - window.currentProfile.amp) * 0.05;
 
-  initThreeBlob(); // Boot up WebGL before manualUpdate runs so uniforms exist
-  manualUpdate();
-  
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  
-  // Show onboarding on every refresh
-  showOnboarding();
-});
-</script>
+                // Accumulate time for continuous shader wobble
+                window.accumulatedTime += delta * window.currentProfile.speed;
+                window.blobUniforms.u_time.value = window.accumulatedTime;
+                window.blobUniforms.u_intensity.value = window.currentProfile.intensity;
+
+                // BPM Heartbeat Logic
+                window.currentBpm += (window.targetBpm - window.currentBpm) * 0.05;
+
+                // True heartbeat duration (e.g. 60bpm = 1.0s, 120bpm = 0.5s)
+                const cycleDur = 60.0 / window.currentBpm;
+
+                // Accumulate phase to guarantee smooth beats even when BPM changes
+                window.beatPhase += delta / cycleDur;
+                if (window.beatPhase > 1.0) window.beatPhase -= 1.0;
+
+                // Heartbeat impulse math. sin(phase * PI) gives a 0->1->0 curve.
+                // The exponent shapes it into a sharp spike or a soft hill.
+                const beat = Math.pow(Math.sin(window.beatPhase * Math.PI), window.currentProfile.exp);
+
+                // Scale jumps based on the beat amplitude
+                const scale = 1.16 + (window.currentProfile.amp * beat);
+                mesh.scale.set(scale, scale, scale);
+
+                renderer.render(scene, camera);
+                if (tinyContainer) {
+                    tinyRenderer.render(scene, camera);
+                }
+            }
+
+            animate();
+        }
+
+        // ─── CONTEXT CARD (stub for mock) ─────────────────
+        function updateContextCard() {
+            // Insights are generated but displayed inline in cards, no separate context card needed
+        }
+
+        // ─── BOOT SEQUENCE (MOCK) ────────────────────────────
+        async function bootApp() {
+            // Seed 8 months of data if DB is empty
+            const count = await SomaDB.getReadingCount();
+            if (count === 0) {
+                showConnStatus('Generating 8 months of wellness data…', '');
+                await SomaDB.seedDemoData(240);
+                hideConnStatus();
+            }
+
+            // Auto-set profile: Arjun, 27yo, 175cm, 72kg
+            let profile = await SomaDB.getProfile();
+            if (!profile) {
+                profile = await SomaDB.saveProfile({ age: 27, height_cm: 175, weight_kg: 72 });
+            }
+
+            // Compute baselines and generate insights
+            await SomaAnalytics.computeBaselines(profile);
+            const baselines = await SomaDB.getBaselines();
+
+            // Create realistic "right now" mock live data for a calm afternoon
+            const mockLive = {
+                bpm: 62,
+                spo2: 98,
+                rmssd: 48.2,
+                sdnn: 55.1,
+                pnn50: 22.4,
+                stress_index: 1.4,
+                stress_level: 'Low',
+                recovery_score: 82,
+                wellness_state: 'Calm & Recovered',
+                insight: 'Your nervous system is settled. A good time to focus or rest deeply.',
+                sleepDur: '7h 24m',
+                sleepCopy: 'You nearly hit your target last night. Consistent bedtime helped.',
+                _ready: true,
+                _bufferSize: 30,
+                _bufferNeeded: 5
+            };
+
+            hasLiveData = true;
+            currentState = mockLive.wellness_state;
+            window._latestSensorData = mockLive;
+
+            await SomaInsights.generate(mockLive, baselines, profile);
+            updateContextCard();
+
+            // Update UI with mock live data
+            updateUI(currentState, currentTimeSlot, mockLive);
+        }
+
+        // ═══════════════════════════════════════════════════
+        // DEV CONTROLS LOGIC
+        // ═══════════════════════════════════════════════════
+        const DEV_TIME_SLOTS = ['morning', 'afternoon', 'evening', 'night'];
+        const DEV_TIME_LABELS = ['Morning', 'Afternoon', 'Evening', 'Night'];
+
+        let devPanelOpen = false;
+
+        function toggleDevPanel() {
+            devPanelOpen = !devPanelOpen;
+            document.getElementById('devPanel').classList.toggle('open', devPanelOpen);
+            document.getElementById('devFab').classList.toggle('open', devPanelOpen);
+            const icon = document.getElementById('devFabIcon');
+            icon.className = devPanelOpen ? 'ph ph-x' : 'ph ph-sliders-horizontal';
+        }
+
+        function updateSliderFill(sliderId, fillId) {
+            const slider = document.getElementById(sliderId);
+            const fill = document.getElementById(fillId);
+            const pct = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+            fill.style.width = pct + '%';
+        }
+
+        /**
+         * Direct physiological mapping from BPM + SpO2 → all derived metrics.
+         * Bypasses BioEngine entirely because Baevsky SI formula produces
+         * unrealistic values from synthetic uniform-jitter IBIs.
+         * These curves are tuned for presentation-grade demo control.
+         */
+        function computeDevMetrics(bpm, spo2) {
+            // ── Stress Index: BPM → SI (Baevsky-equivalent range 0.5–10) ──
+            // Low BPM = relaxed (low SI), high BPM = stressed (high SI)
+            let si;
+            if (bpm <= 55)       si = 0.5 + ((bpm - 40) / 15) * 0.8;      // 40-55 → 0.5-1.3
+            else if (bpm <= 72)  si = 1.3 + ((bpm - 55) / 17) * 1.2;      // 55-72 → 1.3-2.5
+            else if (bpm <= 90)  si = 2.5 + ((bpm - 72) / 18) * 2.0;      // 72-90 → 2.5-4.5
+            else if (bpm <= 110) si = 4.5 + ((bpm - 90) / 20) * 2.5;      // 90-110 → 4.5-7.0
+            else                 si = 7.0 + ((bpm - 110) / 40) * 3.0;     // 110-150 → 7.0-10.0
+            si = Math.max(0.5, Math.min(10, si));
+
+            // ── RMSSD: inversely related to BPM (parasympathetic marker) ──
+            let rmssd;
+            if (bpm <= 55)       rmssd = 75 - ((bpm - 40) / 15) * 15;     // 40-55 → 75-60
+            else if (bpm <= 72)  rmssd = 60 - ((bpm - 55) / 17) * 18;     // 55-72 → 60-42
+            else if (bpm <= 90)  rmssd = 42 - ((bpm - 72) / 18) * 16;     // 72-90 → 42-26
+            else if (bpm <= 110) rmssd = 26 - ((bpm - 90) / 20) * 11;     // 90-110 → 26-15
+            else                 rmssd = 15 - ((bpm - 110) / 40) * 7;     // 110-150 → 15-8
+            rmssd = Math.max(5, Math.min(85, rmssd));
+
+            // ── SDNN: tracks RMSSD but slightly broader ──
+            const sdnn = Math.max(10, Math.min(90, rmssd * 1.15 + 5));
+
+            // ── pNN50: drops with higher BPM ──
+            const pnn50 = Math.max(0, Math.min(50, (rmssd - 15) * 1.2));
+
+            // ── Recovery Score: composite of RMSSD, SI, SpO2 ──
+            const rmssdNorm = Math.min(rmssd / 100, 1) * 100;
+            const siNorm = Math.max(0, (10 - si) / 10) * 100;
+            const spo2Norm = Math.max(0, (spo2 - 90) / 10) * 100;
+            const recovery = Math.round(
+                rmssdNorm * 0.4 + siNorm * 0.4 + spo2Norm * 0.2
+            );
+
+            // ── Stress Level label ──
+            const stressLevel = si < 2 ? 'Low' : si < 4 ? 'Moderate' : 'High';
+
+            // ── Wellness State: uses same decision matrix as BioEngine ──
+            const state = SomaBioEngine.classifyState(si, rmssd, recovery);
+
+            // ── Insight text per state ──
+            const insightMap = {
+                'Calm & Recovered': 'Your nervous system is settled. A good time to focus or rest deeply.',
+                'Mildly Stressed': 'Your body is carrying some load. Slow breathing for a few minutes may help.',
+                'Fatigued': 'You are calm but your body has not fully recovered. Rest will help more than activity right now.',
+                'Under Load': 'Your autonomic system is working hard. Try to step away and give your body a moment to settle.'
+            };
+
+            return {
+                bpm,
+                spo2,
+                rmssd: +rmssd.toFixed(1),
+                sdnn: +sdnn.toFixed(1),
+                pnn50: +pnn50.toFixed(1),
+                stress_index: +si.toFixed(1),
+                stress_level: stressLevel,
+                recovery_score: Math.max(0, Math.min(100, recovery)),
+                wellness_state: state,
+                insight: insightMap[state] || '',
+                _ready: true,
+                _bufferSize: 30,
+                _bufferNeeded: 5
+            };
+        }
+
+        function onDevSliderChange() {
+            // Read slider values
+            const timeIdx = parseInt(document.getElementById('devTimeSlider').value);
+            const bpm = parseInt(document.getElementById('devBpmSlider').value);
+            const spo2 = parseInt(document.getElementById('devSpo2Slider').value);
+
+            // Update labels
+            document.getElementById('devTimeValue').textContent = DEV_TIME_LABELS[timeIdx];
+            document.getElementById('devBpmValue').textContent = bpm + ' bpm';
+            document.getElementById('devSpo2Value').textContent = spo2 + '%';
+
+            // Update fills
+            updateSliderFill('devTimeSlider', 'devTimeFill');
+            updateSliderFill('devBpmSlider', 'devBpmFill');
+            updateSliderFill('devSpo2Slider', 'devSpo2Fill');
+
+            // Set time slot
+            currentTimeSlot = DEV_TIME_SLOTS[timeIdx];
+
+            // ── Direct physiological mapping (bypasses BioEngine) ──
+            const computed = computeDevMetrics(bpm, spo2);
+
+            // Build full live data object
+            const sleep = sleepDefaults[computed.wellness_state] || sleepDefaults['Calm & Recovered'];
+            const liveData = {
+                ...computed,
+                sleepDur: sleep.sleepDur,
+                sleepCopy: sleep.sleepCopy
+            };
+
+            // Mark as live and update global state
+            hasLiveData = true;
+            currentState = computed.wellness_state;
+            window._latestSensorData = liveData;
+
+            // Update home arc fill based on the time-of-day metric
+            const tConfig = homeMetricConfig[currentTimeSlot];
+            if (tConfig) {
+                const mainVal = tConfig.calc(liveData);
+                const arcFill = document.getElementById('homeArcFill');
+                if (arcFill) {
+                    const offset = 208.6 - (208.6 * (mainVal / 100));
+                    arcFill.style.strokeDashoffset = offset;
+                }
+            }
+
+            // Push through UI — updates all cards, home screen, orb, theme
+            updateUI(currentState, currentTimeSlot, liveData);
+
+            // Regenerate insights asynchronously for the new state
+            (async () => {
+                const profile = await SomaDB.getProfile();
+                const baselines = await SomaDB.getBaselines();
+                if (profile && baselines) {
+                    await SomaInsights.generate(liveData, baselines, profile);
+                }
+            })();
+        }
+
+        function initDevControls() {
+            ['devTimeSlider', 'devBpmSlider', 'devSpo2Slider'].forEach(id => {
+                document.getElementById(id).addEventListener('input', onDevSliderChange);
+            });
+
+            // Sync initial slider state with bootApp defaults
+            const timeMap = { morning: 0, afternoon: 1, evening: 2, night: 3 };
+            document.getElementById('devTimeSlider').value = timeMap[currentTimeSlot] || 1;
+
+            if (window._latestSensorData) {
+                document.getElementById('devBpmSlider').value = Math.round(window._latestSensorData.bpm);
+                document.getElementById('devSpo2Slider').value = Math.round(window._latestSensorData.spo2);
+            }
+
+            // Update labels + fills to match initial state
+            const timeIdx = parseInt(document.getElementById('devTimeSlider').value);
+            document.getElementById('devTimeValue').textContent = DEV_TIME_LABELS[timeIdx];
+            document.getElementById('devBpmValue').textContent = document.getElementById('devBpmSlider').value + ' bpm';
+            document.getElementById('devSpo2Value').textContent = document.getElementById('devSpo2Slider').value + '%';
+            updateSliderFill('devTimeSlider', 'devTimeFill');
+            updateSliderFill('devBpmSlider', 'devBpmFill');
+            updateSliderFill('devSpo2Slider', 'devSpo2Fill');
+        }
+
+        // ─── INIT (MOCK — no WebSocket, no onboarding) ───────
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Determine time-of-day slot
+            const h = new Date().getHours();
+            if (h >= 11 && h < 16) currentTimeSlot = "afternoon";
+            else if (h >= 16 && h < 20) currentTimeSlot = "evening";
+            else if (h >= 20 || h < 5) currentTimeSlot = "night";
+            else currentTimeSlot = "morning";
+
+            initThreeBlob();
+            updateUI(currentState, currentTimeSlot, stateData[currentState]);
+            window.addEventListener('scroll', handleScroll, { passive: true });
+
+            // Initialize IndexedDB (separate mock DB)
+            await SomaDB.init();
+            initObListeners();
+
+            // Hide onboarding, show profile button immediately
+            document.getElementById('profileBtn').style.display = 'flex';
+
+            // Boot with auto-profile
+            await bootApp();
+
+            // Initialize dev controls AFTER boot so sliders sync with mock data
+            initDevControls();
+        });
+    </script>
 </body>
+
 </html>
